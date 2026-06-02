@@ -64,7 +64,7 @@ const Inbox = ({ initialCustomerId }) => {
   // Join ticket room when active conversation changes
   useEffect(() => {
     if (active && isValidObjectId(active)) {
-      console.log("Joining ticket room:", active);
+      
       socketService.joinTicket(active);
       loadTicketDetails(active);
     }
@@ -100,7 +100,7 @@ const Inbox = ({ initialCustomerId }) => {
           unreadCount: 0 // You can implement this later based on your needs
         }));
 
-        console.log('Transformed conversations:', transformedConversations);
+        
         setConversations(transformedConversations);
         
         // Set first conversation as active if no active conversation and we have data

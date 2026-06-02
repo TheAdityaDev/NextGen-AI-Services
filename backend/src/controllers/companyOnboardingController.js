@@ -46,7 +46,7 @@ const companyStep1 = asyncHandler(async (req, res) => {
  * Collect company identity. Append to Redis session.
  */
 const companyStep2 = asyncHandler(async (req, res) => {
-  const { sessionId, companyName, companyWebsite } = req.body;
+  const { sessionId, companyName, companyWebsite, companyLogo } = req.body;
 
   const session = await getOnboardingSession(sessionId);
   if (!session) {
@@ -56,7 +56,7 @@ const companyStep2 = asyncHandler(async (req, res) => {
   await setOnboardingSession(sessionId, {
     ...session,
     step: 2,
-    company: { companyName, companyWebsite },
+    company: { companyName, companyWebsite, companyLogo: companyLogo || null },
   });
 
   sendSuccess(
@@ -125,6 +125,7 @@ const companyStep4 = asyncHandler(async (req, res) => {
   const tenant = await createTenant({
     companyName: company.companyName,
     companyWebsite: company.companyWebsite,
+    companyLogo: company.companyLogo,
     industryType: details.industryType,
     countryRegion: details.countryRegion,
     createdBy: user._id,

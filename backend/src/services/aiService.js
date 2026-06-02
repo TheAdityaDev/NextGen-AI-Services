@@ -189,8 +189,9 @@ Rules:
     const uncertainPhrases = ['not sure', 'might be', 'possibly', 'maybe', 'i think'];
     if (uncertainPhrases.some(p => aiResponse.toLowerCase().includes(p))) confidence -= 0.1;
 
-    // Penalise very short customer messages (likely ambiguous)
-    if (customerMessage.trim().length < 10) confidence -= 0.2;
+    // Penalise very short customer messages (likely ambiguous) unless it is a common greeting
+    const isGreeting = /^(hello|hi|hey|greetings|good morning|good afternoon|good evening|yo)\b/i.test(customerMessage.trim());
+    if (customerMessage.trim().length < 10 && !isGreeting) confidence -= 0.2;
 
     return Math.max(0.1, Math.min(0.95, confidence));
   }

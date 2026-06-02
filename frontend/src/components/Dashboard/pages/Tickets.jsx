@@ -85,7 +85,7 @@ const Tickets = ({ onNavigateToInbox }) => {
     : (tickets || []).filter(t => t.status === filter.toLowerCase());
 
   const handleTicketClick = (ticket) => {
-    console.log('Ticket clicked:', ticket); // Debug log
+     // Debug log
     
     // If ticket is already assigned to someone, go directly to inbox
     if (ticket.assignedTo || (ticket.assignedAgent && ticket.assignedAgent !== 'Unassigned')) {
@@ -101,7 +101,7 @@ const Tickets = ({ onNavigateToInbox }) => {
   const handleAssignTicket = async () => {
     if (!selectedTicket) return;
 
-    console.log('Assigning ticket:', selectedTicket._id, 'to user:', user?._id);
+    
 
     try {
       const response = await apiService.updateTicket(selectedTicket._id, {
@@ -109,7 +109,7 @@ const Tickets = ({ onNavigateToInbox }) => {
         status: 'in_progress' // Change status to in_progress when assigned
       });
 
-      console.log('Assignment response:', response);
+      
 
       if (response.success) {
         // Update local state with the actual response data
@@ -162,7 +162,7 @@ const Tickets = ({ onNavigateToInbox }) => {
       customerEmail: newTicketData.customerEmail || null, // Allow null email
     };
 
-    console.log('Creating ticket with data:', ticketData);
+    
 
     try {
       const response = await apiService.createTicket(ticketData);

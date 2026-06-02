@@ -53,12 +53,12 @@ class SocketService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('Socket connected:', this.socket.id);
+      
       this.connected = true;
     });
 
     this.socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      
       this.connected = false;
       this.stopHeartbeat();
     });
@@ -97,7 +97,7 @@ class SocketService {
   // Inbox methods
   joinTicket(ticketId) {
     if (this.socket && this.connected) {
-      console.log("Joining ticket room:", ticketId);
+      
       this.socket.emit('ticket:join', { ticketId });
     }
   }

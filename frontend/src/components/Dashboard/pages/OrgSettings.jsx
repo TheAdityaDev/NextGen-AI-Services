@@ -6,6 +6,7 @@ const OrgSettings = () => {
   const [form, setForm]       = useState({
     companyName:       '',
     companyWebsite:    '',
+    companyLogo:       null,
     industryType:      '',
     countryRegion:     '',
     supportHoursOpen:  '',
@@ -29,6 +30,7 @@ const OrgSettings = () => {
         setForm({
           companyName:       tenant?.companyName       || '',
           companyWebsite:    tenant?.companyWebsite    || '',
+          companyLogo:       tenant?.companyLogo       || null,
           industryType:      tenant?.industryType      || '',
           countryRegion:     tenant?.countryRegion     || '',
           supportHoursOpen:  supportConfig?.supportHoursOpen  || '',
@@ -112,6 +114,39 @@ const OrgSettings = () => {
               onChange={e => set('companyWebsite', e.target.value)}
               placeholder="https://acme.com"
             />
+          </div>
+
+          <div className="orgsettings__field">
+            <label>Company Logo</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="db-input"
+              style={{ padding: '8px 12px', background: 'transparent', width: '100%' }}
+              onChange={e => {
+                const file = e.target.files[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    set('companyLogo', reader.result);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            {form.companyLogo && (
+              <div className="orgsettings__logo-preview" style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <img src={form.companyLogo} alt="Company Logo" style={{ maxHeight: 60, borderRadius: 4 }} />
+                <button
+                  type="button"
+                  onClick={() => set('companyLogo', null)}
+                  className="db-btn db-btn--danger db-btn--small"
+                  style={{ padding: '4px 8px', fontSize: '12px', height: 'auto', minWidth: 'auto', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  Remove Logo
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="orgsettings__field">

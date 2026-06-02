@@ -82,6 +82,42 @@ const CompanyIdentity = ({ formData, updateForm, onNext, onBack, onSubmit, loadi
         />
       </div>
 
+      <div className="ob-field">
+        <label>
+          Company logo
+          <span className="ob-field__optional">optional</span>
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                updateForm({ companyLogo: reader.result });
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+          className="db-input"
+          style={{ padding: '8px 12px', background: 'transparent', width: '100%', border: '1px solid #d1d5db', borderRadius: '8px', color: 'inherit' }}
+        />
+        {f.companyLogo && (
+          <div className="company-identity__logo-preview" style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <img src={f.companyLogo} alt="Logo preview" style={{ maxHeight: 50, borderRadius: 4 }} />
+            <button
+              type="button"
+              onClick={() => updateForm({ companyLogo: null })}
+              className="ob-btn ob-btn--ghost"
+              style={{ padding: '4px 8px', fontSize: '12px', height: 'auto', minWidth: 'auto', border: '1px solid #d1d5db' }}
+            >
+              Remove
+            </button>
+          </div>
+        )}
+      </div>
+
       <div className="ob-actions">
         <button className="ob-btn ob-btn--ghost" type="button" onClick={onBack}>
           <span className="ob-arrow ob-arrow--back">

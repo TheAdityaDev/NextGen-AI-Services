@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  console.log('NextGen AI Services Widget: Starting initialization...');
+  
   
   // Widget configuration
   const config = window.NextGenAIConfig || window.ChatFrameConfig || {};
@@ -12,7 +12,7 @@
     return;
   }
   
-  console.log('NextGen AI Services Widget: Config loaded', config);
+  
   
   // Widget state
   let isOpen = false;
@@ -22,7 +22,7 @@
   let lastMessageCount = 0;
   let pollFailCount = 0;
   const MAX_POLL_FAILS = 5;
-  const POLL_INTERVAL_MS = 3000;
+  let pollAttemptsWithoutNewMessages = 0;
   
   // API base URL — derived from where this script was loaded so it works
   // in both local dev (localhost:5000) and production automatically.
@@ -37,14 +37,19 @@
   
   // Create widget HTML
   function createWidget() {
-    console.log('NextGen AI Services Widget: Creating widget elements...');
+    
     
     const widget = document.createElement('div');
     widget.id = 'chatframe-widget';
     widget.innerHTML = `
       <div id="chatframe-button" class="cf-button">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="10" width="18" height="10" rx="3"></rect>
+          <circle cx="12" cy="4" r="1.5"></circle>
+          <path d="M12 5.5V10"></path>
+          <circle cx="8" cy="14" r="1" fill="currentColor"></circle>
+          <circle cx="16" cy="14" r="1" fill="currentColor"></circle>
+          <path d="M9 17h6"></path>
         </svg>
       </div>
       <div id="chatframe-window" class="cf-window cf-hidden">
@@ -78,14 +83,23 @@
     `;
     
     document.body.appendChild(widget);
-    console.log('NextGen AI Services Widget: Widget elements added to DOM');
+    
     return widget;
   }
   
   // Create widget styles
   function createStyles() {
-    console.log('NextGen AI Services Widget: Creating styles...');
     
+    
+    var color = config.primaryColor || '#6366f1';
+    var rgbColor = '99, 102, 241';
+    if (color.indexOf('#') === 0 && color.length === 7) {
+      var r = parseInt(color.substring(1, 3), 16);
+      var g = parseInt(color.substring(3, 5), 16);
+      var b = parseInt(color.substring(5, 7), 16);
+      if (!isNaN(r) && !isNaN(g) && !isNaN(b)) rgbColor = r + ',' + g + ',' + b;
+    }
+
     const styles = document.createElement('style');
     styles.textContent = `
       #chatframe-widget {
@@ -100,7 +114,7 @@
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: ${config.primaryColor || '#6366f1'};
+        background: ${color};
         color: white;
         border: none;
         cursor: pointer;
@@ -109,11 +123,38 @@
         justify-content: center;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         transition: all 0.3s ease;
+        animation: cf-button-waves 2.5s infinite;
+      }
+      
+      .cf-button svg {
+        animation: cf-svg-say-hi 3.5s infinite ease-in-out;
+        transform-origin: bottom center;
       }
       
       .cf-button:hover {
         transform: scale(1.05);
         box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      }
+      
+      @keyframes cf-button-waves {
+        0% {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 0 0 0 rgba(${rgbColor}, 0.7);
+        }
+        70% {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 0 0 15px rgba(${rgbColor}, 0);
+        }
+        100% {
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 0 0 0 rgba(${rgbColor}, 0);
+        }
+      }
+      
+      @keyframes cf-svg-say-hi {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        10% { transform: rotate(12deg) scale(1.08); }
+        20% { transform: rotate(-10deg) scale(1.08); }
+        30% { transform: rotate(12deg) scale(1.08); }
+        40% { transform: rotate(-6deg) scale(1.08); }
+        50% { transform: rotate(0deg) scale(1); }
       }
       
       .cf-window {
@@ -139,7 +180,7 @@
       }
       
       .cf-header {
-        background: ${config.primaryColor || '#6366f1'};
+        background: ${color};
         color: white;
         padding: 16px;
         display: flex;
@@ -195,6 +236,7 @@
         display: flex;
         align-items: flex-end;
         gap: 8px;
+        flex-direction: column;
       }
       
       .cf-message-text {
@@ -206,15 +248,20 @@
         max-width: 80%;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         color: #333333;
+        word-break: break-word;
       }
       
       .cf-message.cf-user .cf-message-content {
-        justify-content: flex-end;
+        align-items: flex-end;
       }
       
       .cf-message.cf-user .cf-message-text {
-        background: ${config.primaryColor || '#6366f1'};
+        background: ${color};
         color: white;
+      }
+      
+      .cf-message.cf-bot .cf-message-content {
+        align-items: flex-start;
       }
       
       .cf-message.cf-bot .cf-message-text {
@@ -257,11 +304,11 @@
       }
       
       .cf-input-area input:focus {
-        border-color: ${config.primaryColor || '#6366f1'};
+        border-color: ${color};
       }
       
       .cf-send {
-        background: ${config.primaryColor || '#6366f1'};
+        background: ${color};
         color: white;
         border: none;
         border-radius: 8px;
@@ -281,12 +328,12 @@
     `;
     
     document.head.appendChild(styles);
-    console.log('NextGen AI Services Widget: Styles added');
+    
   }
   
   // Load widget configuration
   async function loadConfig() {
-    console.log('NextGen AI Services Widget: Loading configuration...');
+    
     
     try {
       const response = await fetch(`${API_BASE}/widget/config/${widgetKey}`);
@@ -294,7 +341,7 @@
       
       if (data.success) {
         widgetConfig = data.data;
-        console.log('NextGen AI Services Widget: Configuration loaded', widgetConfig);
+        
         updateWidgetUI();
       } else {
         console.error('NextGen AI Services Widget: Failed to load config', data);
@@ -308,7 +355,7 @@
   function updateWidgetUI() {
     if (!widgetConfig) return;
     
-    console.log('NextGen AI Services Widget: Updating UI with config...');
+    
     
     const welcomeEl = document.getElementById('chatframe-welcome');
     const titleEl = document.querySelector('.cf-title');
@@ -322,9 +369,7 @@
     }
     
     if (titleEl) {
-      titleEl.textContent = widgetConfig.companyName ? 
-        `${widgetConfig.companyName} Support` : 
-        'Support Chat';
+      titleEl.textContent = 'Support Chat';
     }
     
     if (statusDot && statusText) {
@@ -342,7 +387,6 @@
   async function pollForMessages() {
     if (!currentTicketId) return;
     
-    // Create a fresh controller for each poll call
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -352,49 +396,55 @@
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal
       });
-      clearTimeout(timeoutId); // cancel timeout on success
+      clearTimeout(timeoutId);
       
       const data = await response.json();
-      
-      // Reset fail count on success
       pollFailCount = 0;
       
       if (data.success && data.data && Array.isArray(data.data.messages)) {
         const messages = data.data.messages;
         
-        if (messages.length > lastMessageCount) {
-          const messagesEl = document.getElementById('chatframe-messages');
-          if (messagesEl) {
-            const welcomeText = widgetConfig?.isOnline 
-              ? (widgetConfig.welcomeMessage || '👋 Hi there! How can we help you today?')
-              : (widgetConfig?.offlineMessage || 'We are currently offline.');
-
-            messagesEl.innerHTML = `
-              <div class="cf-message cf-bot">
-                <div class="cf-message-content">
-                  <div class="cf-message-text" id="chatframe-welcome">${welcomeText}</div>
-                </div>
-              </div>
-            `;
+        if (messages.length <= lastMessageCount) {
+          pollAttemptsWithoutNewMessages++;
+          if (pollAttemptsWithoutNewMessages === 30) {
             
-            messages.forEach(msg => {
-              const messageType = msg.senderType === 'customer' ? 'user' : 'bot';
-              if (msg.senderType === 'ai') {
-                addMessageToDOMWithAI(msg.content, messageType, true, msg.aiConfidence);
-              } else {
-                addMessageToDOM(msg.content, messageType);
-              }
-            });
+            startMessagePolling(15000);
+          } else if (pollAttemptsWithoutNewMessages >= 60) {
+            
+            stopMessagePolling();
           }
-          
-          lastMessageCount = messages.length;
+          return;
         }
+        
+        pollAttemptsWithoutNewMessages = 0;
+        const messagesEl = document.getElementById('chatframe-messages');
+        if (messagesEl) {
+          const welcomeText = widgetConfig?.isOnline 
+            ? (widgetConfig.welcomeMessage || '👋 Hi there! How can we help you today?')
+            : (widgetConfig?.offlineMessage || 'We are currently offline.');
+
+          messagesEl.innerHTML = `
+            <div class="cf-message cf-bot">
+              <div class="cf-message-content">
+                <div class="cf-message-text" id="chatframe-welcome">${welcomeText}</div>
+              </div>
+            </div>
+          `;
+          
+          messages.forEach(msg => {
+            const messageType = msg.senderType === 'customer' ? 'user' : 'bot';
+            if (msg.senderType === 'ai') {
+              addMessageToDOMWithAI(msg.content, messageType, true, msg.aiConfidence);
+            } else {
+              addMessageToDOM(msg.content, messageType);
+            }
+          });
+        }
+        
+        lastMessageCount = messages.length;
       }
     } catch (error) {
-      clearTimeout(timeoutId); // always clear timeout
-      if (error.name === 'AbortError') {
-        // Fetch timed out — count as a failure
-      }
+      clearTimeout(timeoutId);
       pollFailCount++;
       if (pollFailCount === 1 || pollFailCount % 5 === 0) {
         console.warn(`NextGen AI Services Widget: Poll failed (${pollFailCount}x) — server may be restarting`);
@@ -412,14 +462,13 @@
   }
   
   // Start polling for messages
-  function startMessagePolling() {
+  function startMessagePolling(intervalMs) {
+    const speed = intervalMs || 3000;
     if (messagePollingInterval) {
       clearInterval(messagePollingInterval);
     }
+    messagePollingInterval = setInterval(pollForMessages, speed);
     
-    // Poll every 3 seconds for new messages
-    messagePollingInterval = setInterval(pollForMessages, 3000);
-    console.log('NextGen AI Services Widget: Started message polling');
   }
   
   // Stop polling for messages
@@ -427,16 +476,16 @@
     if (messagePollingInterval) {
       clearInterval(messagePollingInterval);
       messagePollingInterval = null;
-      console.log('NextGen AI Services Widget: Stopped message polling');
+      
     }
   }
+  
   async function sendMessage(message) {
     if (!message.trim()) return;
     
-    console.log('NextGen AI Services Widget: Sending message:', message);
     
-    // Add user message to UI
     addMessage(message, 'user');
+    pollAttemptsWithoutNewMessages = 0;
     
     try {
       const response = await fetch(`${API_BASE}/widget/message`, {
@@ -456,16 +505,16 @@
       if (data.success) {
         const wasNewTicket = !currentTicketId;
         currentTicketId = data.data.ticketId;
-        console.log('NextGen AI Services Widget: Message sent successfully', data);
         
-        // Reset fail count and start polling if this is a new conversation
+        
         pollFailCount = 0;
+        pollAttemptsWithoutNewMessages = 0;
+        startMessagePolling();
+        
         if (wasNewTicket) {
-          startMessagePolling();
-          lastMessageCount = 1; // We just sent the first message
+          lastMessageCount = 1;
         }
         
-        // Add bot response if any
         if (data.data.response) {
           setTimeout(() => {
             addMessage(data.data.response, 'bot');
@@ -534,24 +583,23 @@
     const window = document.getElementById('chatframe-window');
     isOpen = !isOpen;
     
-    console.log('NextGen AI Services Widget: Toggling widget', isOpen ? 'open' : 'closed');
+    
     
     if (isOpen) {
       window.classList.remove('cf-hidden');
-      // Start polling if we have an active conversation
       if (currentTicketId) {
+        pollAttemptsWithoutNewMessages = 0;
         startMessagePolling();
       }
     } else {
       window.classList.add('cf-hidden');
-      // Stop polling when widget is closed to save resources
       stopMessagePolling();
     }
   }
   
   // Initialize widget
   function init() {
-    console.log('NextGen AI Services Widget: Initializing...');
+    
     
     createStyles();
     const widget = createWidget();
@@ -563,6 +611,13 @@
     const input = document.getElementById('chatframe-input');
     const sendBtn = document.getElementById('chatframe-send');
     
+    input.addEventListener('focus', () => {
+      if (currentTicketId && isOpen) {
+        pollAttemptsWithoutNewMessages = 0;
+        startMessagePolling();
+      }
+    });
+
     sendBtn.addEventListener('click', () => {
       sendMessage(input.value);
       input.value = '';
@@ -578,7 +633,7 @@
     // Load configuration
     loadConfig();
     
-    console.log('NextGen AI Services Widget: Initialization complete');
+    
   }
   
   // Initialize when DOM is ready

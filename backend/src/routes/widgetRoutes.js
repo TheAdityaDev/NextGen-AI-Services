@@ -40,6 +40,7 @@ router.get("/widget.js", (req, res) => {
   var pollFailCount = 0;
   var MAX_POLL_FAILS = 5;
   var API_BASE = '${API_BASE}';
+  var pollAttemptsWithoutNewMessages = 0;
 
   function createWidget() {
     var widget = document.createElement('div');
@@ -48,8 +49,13 @@ router.get("/widget.js", (req, res) => {
     var color = config.primaryColor || '#6366f1';
     widget.innerHTML =
       '<div id="chatframe-button" class="cf-button">' +
-        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
-          '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' +
+        '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+          '<rect x="3" y="10" width="18" height="10" rx="3"></rect>' +
+          '<circle cx="12" cy="4" r="1.5"></circle>' +
+          '<path d="M12 5.5V10"></path>' +
+          '<circle cx="8" cy="14" r="1" fill="currentColor"></circle>' +
+          '<circle cx="16" cy="14" r="1" fill="currentColor"></circle>' +
+          '<path d="M9 17h6"></path>' +
         '</svg>' +
       '</div>' +
       '<div id="chatframe-window" class="cf-window cf-hidden">' +
@@ -74,14 +80,24 @@ router.get("/widget.js", (req, res) => {
 
   function createStyles() {
     var color = config.primaryColor || '#6366f1';
+    var rgbColor = '99, 102, 241';
+    if (color.indexOf('#') === 0 && color.length === 7) {
+      var r = parseInt(color.substring(1, 3), 16);
+      var g = parseInt(color.substring(3, 5), 16);
+      var b = parseInt(color.substring(5, 7), 16);
+      if (!isNaN(r) && !isNaN(g) && !isNaN(b)) rgbColor = r + ',' + g + ',' + b;
+    }
     var posBtn = config.position === 'bottom-left' ? 'left:20px;' : 'right:20px;';
     var posWin = config.position === 'bottom-left' ? 'left:0;' : 'right:0;';
     var origin = config.position === 'bottom-left' ? 'bottom left' : 'bottom right';
     var s = document.createElement('style');
     s.textContent = [
       '#chatframe-widget{position:fixed;' + posBtn + 'bottom:20px;z-index:999999;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}',
-      '.cf-button{width:60px;height:60px;border-radius:50%;background:' + color + ';color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .3s ease}',
+      '.cf-button{width:60px;height:60px;border-radius:50%;background:' + color + ';color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:all .3s ease;animation:cf-button-waves 2.5s infinite}',
+      '.cf-button svg{animation:cf-svg-say-hi 3.5s infinite ease-in-out;transform-origin:bottom center}',
       '.cf-button:hover{transform:scale(1.05);box-shadow:0 6px 20px rgba(0,0,0,.2)}',
+      '@keyframes cf-button-waves {0%{box-shadow:0 4px 12px rgba(0,0,0,.15), 0 0 0 0 rgba(' + rgbColor + ',.7)} 70%{box-shadow:0 4px 12px rgba(0,0,0,.15), 0 0 0 15px rgba(' + rgbColor + ',0)} 100%{box-shadow:0 4px 12px rgba(0,0,0,.15), 0 0 0 0 rgba(' + rgbColor + ',0)}}',
+      '@keyframes cf-svg-say-hi {0%,100%{transform:rotate(0deg) scale(1)} 10%{transform:rotate(12deg) scale(1.08)} 20%{transform:rotate(-10deg) scale(1.08)} 30%{transform:rotate(12deg) scale(1.08)} 40%{transform:rotate(-6deg) scale(1.08)} 50%{transform:rotate(0deg) scale(1)}}',
       '.cf-window{position:absolute;bottom:80px;' + posWin + 'width:350px;height:500px;background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.12);display:flex;flex-direction:column;overflow:hidden;transition:all .3s ease;transform-origin:' + origin + '}',
       '.cf-hidden{opacity:0;visibility:hidden;transform:scale(.8)}',
       '.cf-header{background:' + color + ';color:#fff;padding:16px;display:flex;align-items:center;justify-content:space-between}',
@@ -134,7 +150,7 @@ router.get("/widget.js", (req, res) => {
     var dot = document.querySelector('.cf-status-dot');
     var txt = document.querySelector('.cf-status-text');
     if (welcomeEl) welcomeEl.textContent = widgetConfig.isOnline ? widgetConfig.welcomeMessage : widgetConfig.offlineMessage;
-    if (titleEl) titleEl.textContent = widgetConfig.companyName ? widgetConfig.companyName + ' Support' : 'Support Chat';
+    if (titleEl) titleEl.textContent = 'Support Chat';
     if (dot && txt) {
       dot.style.background = widgetConfig.isOnline ? '#10b981' : '#6b7280';
       txt.textContent = widgetConfig.isOnline ? 'Online' : 'Offline';
@@ -158,7 +174,17 @@ router.get("/widget.js", (req, res) => {
         pollFailCount = 0;
         if (!data.success || !data.data || !Array.isArray(data.data.messages)) return;
         var messages = data.data.messages;
-        if (messages.length <= lastMessageCount) return;
+        if (messages.length <= lastMessageCount) {
+          pollAttemptsWithoutNewMessages++;
+          if (pollAttemptsWithoutNewMessages === 30) {
+            startPolling(15000);
+          } else if (pollAttemptsWithoutNewMessages >= 60) {
+            stopPolling();
+          }
+          return;
+        }
+        pollAttemptsWithoutNewMessages = 0;
+        
         var el = document.getElementById('chatframe-messages');
         if (!el) return;
         var welcome = widgetConfig && widgetConfig.isOnline ? widgetConfig.welcomeMessage : (widgetConfig && widgetConfig.offlineMessage ? widgetConfig.offlineMessage : '\uD83D\uDC4B Hi there! How can we help you today?');
@@ -188,9 +214,10 @@ router.get("/widget.js", (req, res) => {
       });
   }
 
-  function startPolling() {
+  function startPolling(intervalMs) {
+    var speed = intervalMs || 3000;
     if (messagePollingInterval) clearInterval(messagePollingInterval);
-    messagePollingInterval = setInterval(pollForMessages, 3000);
+    messagePollingInterval = setInterval(pollForMessages, speed);
   }
 
   function stopPolling() {
@@ -200,6 +227,7 @@ router.get("/widget.js", (req, res) => {
   function sendMessage(message) {
     if (!message.trim()) return;
     addMessageToDOM(message, 'user');
+    pollAttemptsWithoutNewMessages = 0;
     fetch(API_BASE + '/widget/message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -211,7 +239,9 @@ router.get("/widget.js", (req, res) => {
       var wasNew = !currentTicketId;
       currentTicketId = data.data.ticketId;
       pollFailCount = 0;
-      if (wasNew) { startPolling(); lastMessageCount = 1; }
+      pollAttemptsWithoutNewMessages = 0;
+      startPolling();
+      if (wasNew) { lastMessageCount = 1; }
       if (data.data.response) {
         setTimeout(function() { addMessageToDOM(data.data.response, 'bot'); lastMessageCount++; }, 500);
       }
@@ -224,7 +254,10 @@ router.get("/widget.js", (req, res) => {
     isOpen = !isOpen;
     if (isOpen) {
       win.classList.remove('cf-hidden');
-      if (currentTicketId) startPolling();
+      if (currentTicketId) {
+        pollAttemptsWithoutNewMessages = 0;
+        startPolling();
+      }
     } else {
       win.classList.add('cf-hidden');
       stopPolling();
@@ -237,6 +270,12 @@ router.get("/widget.js", (req, res) => {
     document.getElementById('chatframe-button').addEventListener('click', toggleWidget);
     document.getElementById('chatframe-close').addEventListener('click', toggleWidget);
     var input = document.getElementById('chatframe-input');
+    input.addEventListener('focus', function() {
+      if (currentTicketId && isOpen) {
+        pollAttemptsWithoutNewMessages = 0;
+        startPolling();
+      }
+    });
     document.getElementById('chatframe-send').addEventListener('click', function() { var v = input.value; input.value = ''; sendMessage(v); });
     input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { var v = input.value; input.value = ''; sendMessage(v); } });
     loadConfig();
@@ -397,7 +436,7 @@ router.get("/messages/:ticketId", asyncHandler(async (req, res) => {
   try {
     const messages = await Message.find({ ticketId })
       .sort({ createdAt: 1 })
-      .select('content senderType createdAt')
+      .select('content senderType createdAt aiConfidence')
       .lean();
     
     sendSuccess(res, { messages }, "Messages retrieved");
