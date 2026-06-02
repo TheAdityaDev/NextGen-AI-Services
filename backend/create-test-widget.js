@@ -26,7 +26,7 @@ async function createProductionWidget() {
       widgetPosition: 'bottom-right',
       isOnline: true,
       offlineMessage: 'We are currently offline. Leave us a message and we will get back to you.',
-      companyName: 'ChatFrame',
+      companyName: 'NextGen AI Services',
       showBranding: true
     });
 
