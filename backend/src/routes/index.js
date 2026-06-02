@@ -30,7 +30,7 @@ router.get("/health", (req, res) => {
 
   res.json({
     success: true,
-    message: "ChatFrame API is running",
+    message: "NextGen AI Services API is running",
     environment: process.env.NODE_ENV,
     timestamp: new Date().toISOString(),
     ai: aiStatus,
