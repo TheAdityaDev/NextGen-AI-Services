@@ -12,7 +12,7 @@ const getConversations = async (tenantId, query = {}) => {
   const statuses = status.split(",").map((s) => s.trim());
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  const tickets = await Ticket.find({ tenantId, status: { $in: statuses } })
+  const tickets = await Ticket.find({ tenantId, status: { $in: statuses }, isAiHandled: { $ne: true } })
     .populate("assignedTo", "firstName lastName")
     .sort({ updatedAt: -1 })
     .skip(skip)
@@ -85,15 +85,20 @@ const sendMessage = async (tenantId, ticketId, { content, senderId, senderType, 
     aiConfidence,
   });
 
-  // Set firstResponseAt if agent responds for the first time
-  if (senderType === "agent" && !ticket.firstResponseAt) {
-    ticket.firstResponseAt = new Date();
-    await ticket.save({ validateBeforeSave: false });
-  }
+  // If agent responds, make sure ticket is no longer marked as AI handled
+  if (senderType === "agent") {
+    ticket.isAiHandled = false;
+    
+    // Set firstResponseAt if agent responds for the first time
+    if (!ticket.firstResponseAt) {
+      ticket.firstResponseAt = new Date();
+    }
 
-  // Move ticket to in_progress when agent first responds
-  if (senderType === "agent" && ticket.status === "open") {
-    ticket.status = "in_progress";
+    // Move ticket to in_progress when agent first responds
+    if (ticket.status === "open") {
+      ticket.status = "in_progress";
+    }
+
     await ticket.save({ validateBeforeSave: false });
   }
 

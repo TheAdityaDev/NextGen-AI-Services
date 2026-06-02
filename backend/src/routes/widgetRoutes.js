@@ -34,7 +34,7 @@ router.get("/widget.js", (req, res) => {
 
   var isOpen = false;
   var widgetConfig = null;
-  var currentTicketId = null;
+  var currentTicketId = sessionStorage.getItem('chatframe_ticket_id') || null;
   var messagePollingInterval = null;
   var lastMessageCount = 0;
   var pollFailCount = 0;
@@ -176,14 +176,15 @@ router.get("/widget.js", (req, res) => {
         var messages = data.data.messages;
         if (messages.length <= lastMessageCount) {
           pollAttemptsWithoutNewMessages++;
-          if (pollAttemptsWithoutNewMessages === 30) {
-            startPolling(15000);
-          } else if (pollAttemptsWithoutNewMessages >= 60) {
-            stopPolling();
+          if (pollAttemptsWithoutNewMessages === 20) {
+            startPolling(10000);
+          } else if (pollAttemptsWithoutNewMessages >= 50) {
+            startPolling(30000);
           }
           return;
         }
         pollAttemptsWithoutNewMessages = 0;
+        startPolling(3000); // restore default fast polling on activity
         
         var el = document.getElementById('chatframe-messages');
         if (!el) return;
@@ -238,6 +239,7 @@ router.get("/widget.js", (req, res) => {
       if (!data.success) { addMessageToDOM('Sorry, there was an error. Please try again.', 'bot'); return; }
       var wasNew = !currentTicketId;
       currentTicketId = data.data.ticketId;
+      sessionStorage.setItem('chatframe_ticket_id', currentTicketId);
       pollFailCount = 0;
       pollAttemptsWithoutNewMessages = 0;
       startPolling();
@@ -256,6 +258,7 @@ router.get("/widget.js", (req, res) => {
       win.classList.remove('cf-hidden');
       if (currentTicketId) {
         pollAttemptsWithoutNewMessages = 0;
+        pollForMessages(); // poll immediately on open
         startPolling();
       }
     } else {
@@ -279,6 +282,11 @@ router.get("/widget.js", (req, res) => {
     document.getElementById('chatframe-send').addEventListener('click', function() { var v = input.value; input.value = ''; sendMessage(v); });
     input.addEventListener('keypress', function(e) { if (e.key === 'Enter') { var v = input.value; input.value = ''; sendMessage(v); } });
     loadConfig();
+    
+    // Load existing ticket history immediately on load if ticket ID is stored
+    if (currentTicketId) {
+      pollForMessages();
+    }
   }
 
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
@@ -331,7 +339,8 @@ router.post("/message", asyncHandler(async (req, res) => {
       customerEmail: null,
       channel: 'widget',
       status: 'open',
-      priority: 'medium'
+      priority: 'medium',
+      isAiHandled: true // Default to true when first created
     });
   }
   
@@ -342,6 +351,15 @@ router.post("/message", asyncHandler(async (req, res) => {
     content: message,
     senderType: 'customer'
   });
+
+  // Emit customer message to tenant room via Socket.io for real-time inbox updates
+  const io = req.app.get("io");
+  if (io) {
+    io.to(`tenant:${config.tenantId}`).emit("message:new", {
+      ticketId: ticket._id,
+      message: customerMessage,
+    });
+  }
 
   let aiResponse = null;
   
@@ -389,20 +407,38 @@ router.post("/message", asyncHandler(async (req, res) => {
 
           aiResponse = aiResult.response;
           console.log('✅ AI response generated with confidence:', aiResult.confidence);
-        } else if (aiResult) {
-          console.log('🤖 AI confidence too low (' + aiResult.confidence + '), no auto-reply');
+
+          // Emit AI reply via socket for real-time inbox updates
+          if (io) {
+            io.to(`tenant:${config.tenantId}`).emit("message:new", {
+              ticketId: ticket._id,
+              message: aiMessage,
+            });
+          }
+
+          ticket.isAiHandled = true;
+          ticket.aiConfidence = aiResult.confidence;
+          await ticket.save({ validateBeforeSave: false });
         } else {
-          console.log('🤖 AI returned null - check API key or model availability');
+          console.log('🤖 AI confidence too low (' + (aiResult?.confidence || 'null') + '), no auto-reply');
+          ticket.isAiHandled = false;
+          await ticket.save({ validateBeforeSave: false });
         }
       } else {
         console.log('🤖 AI auto-reply not appropriate for this conversation');
+        ticket.isAiHandled = false;
+        await ticket.save({ validateBeforeSave: false });
       }
     } catch (error) {
       console.error('❌ AI response generation failed:', error);
+      ticket.isAiHandled = false;
+      await ticket.save({ validateBeforeSave: false });
       // Continue without AI response - don't fail the entire request
     }
   } else {
     console.log('⚠️  AI disabled or widget offline - skipping AI response');
+    ticket.isAiHandled = false;
+    await ticket.save({ validateBeforeSave: false });
   }
   
   // Fallback offline message if no AI response and widget is offline
@@ -410,13 +446,21 @@ router.post("/message", asyncHandler(async (req, res) => {
     aiResponse = config.offlineMessage;
     
     // Create offline auto-response message
-    await Message.create({
+    const offlineMessage = await Message.create({
       tenantId: config.tenantId,
       ticketId: ticket._id,
       content: aiResponse,
       senderType: 'ai',
       isAiGenerated: true
     });
+
+    // Emit offline reply via socket
+    if (io) {
+      io.to(`tenant:${config.tenantId}`).emit("message:new", {
+        ticketId: ticket._id,
+        message: offlineMessage,
+      });
+    }
   }
   
   sendSuccess(res, { 

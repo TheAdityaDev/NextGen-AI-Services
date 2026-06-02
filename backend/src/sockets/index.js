@@ -53,12 +53,18 @@ const initSockets = (io) => {
     }
 
     // ── Join a specific ticket/conversation room ─────────────────
-    socket.on("ticket:join", (ticketId) => {
-      socket.join(`ticket:${ticketId}`);
+    socket.on("ticket:join", (data) => {
+      const ticketId = typeof data === "string" ? data : data?.ticketId;
+      if (ticketId) {
+        socket.join(`ticket:${ticketId}`);
+      }
     });
 
-    socket.on("ticket:leave", (ticketId) => {
-      socket.leave(`ticket:${ticketId}`);
+    socket.on("ticket:leave", (data) => {
+      const ticketId = typeof data === "string" ? data : data?.ticketId;
+      if (ticketId) {
+        socket.leave(`ticket:${ticketId}`);
+      }
     });
 
     // ── Typing indicators ────────────────────────────────────────

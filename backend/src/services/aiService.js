@@ -134,6 +134,18 @@ Summary:`;
     // Skip very short / unclear messages
     if (!customerMessage || customerMessage.trim().length < 5) return false;
 
+    // Direct human request check (escalate if customer asks for a human)
+    const humanRequestKeywords = [
+      'human', 'agent', 'representative', 'person', 'support team', 
+      'real person', 'talk to someone', 'chat with someone', 'operator',
+      'speak with someone', 'customer care', 'customer service'
+    ];
+    const messageLower = customerMessage.toLowerCase();
+    if (humanRequestKeywords.some(keyword => messageLower.includes(keyword))) {
+      console.log('👤 Customer requested human agent, skipping auto-reply to trigger escalation');
+      return false;
+    }
+
     return true;
   }
 

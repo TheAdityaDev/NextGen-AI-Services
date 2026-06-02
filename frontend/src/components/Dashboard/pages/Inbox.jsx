@@ -32,18 +32,59 @@ const Inbox = ({ initialCustomerId }) => {
     }
 
     // Listen for new messages
-    const handleNewMessage = (message) => {
-      setChatData(prev => ({
-        ...prev,
-        [message.ticketId]: {
-          ...prev[message.ticketId],
-          messages: [...(prev[message.ticketId]?.messages || []), {
-            from: message.from,
-            text: message.text,
-            time: new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          }]
+    const handleNewMessage = (data) => {
+      if (!data || !data.ticketId || !data.message) return;
+      const { ticketId, message } = data;
+      
+      const newMsg = {
+        from: message.senderType === 'customer' ? 'customer' : 
+              message.senderType === 'ai' ? 'ai' : 'agent',
+        text: message.content,
+        time: new Date(message.createdAt).toLocaleTimeString([], { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }),
+        id: message._id,
+        isAiGenerated: message.isAiGenerated || false,
+        aiConfidence: message.aiConfidence || null
+      };
+
+      setChatData(prev => {
+        const ticketChat = prev[ticketId] || { messages: [] };
+        const existingMessages = ticketChat.messages || [];
+        
+        // Prevent duplicate messages if already optimistically added
+        if (existingMessages.some(m => m.id === newMsg.id || (m.sending && m.text === newMsg.text))) {
+          return prev;
         }
-      }));
+
+        return {
+          ...prev,
+          [ticketId]: {
+            ...ticketChat,
+            messages: [...existingMessages, newMsg]
+          }
+        };
+      });
+
+      // Update last message preview and time in the conversation list
+      setConversations(prev => 
+        prev.map(c => {
+          if (c._id === ticketId) {
+            return {
+              ...c,
+              lastActivity: newMsg.time,
+              preview: newMsg.text.substring(0, 50) + (newMsg.text.length > 50 ? '...' : ''),
+              lastMessage: {
+                content: message.content,
+                senderType: message.senderType,
+                createdAt: message.createdAt
+              }
+            };
+          }
+          return c;
+        })
+      );
     };
 
     socketService.onNewMessage(handleNewMessage);
