@@ -33,7 +33,7 @@
 
   const API_BASE = scriptEl
     ? scriptEl.src.replace(/\/api\/widget\/.*$/, '/api')
-    : 'http://localhost:5000/api';
+    : 'https://nextgen-ai-services-production.up.railway.app/api';
   
   // Create widget HTML
   function createWidget() {

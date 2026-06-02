@@ -54,7 +54,6 @@ async function diagnoseAI() {
   }
 
   // console.log('❌ All models failed! Your API key may be invalid or leaked.');
-  // console.log('   Get a new key from: https://makersuite.google.com/app/apikey');
 }
 
 diagnoseAI();
