@@ -1,0 +1,33 @@
+.orgsettings {
+
+  &__section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  &__field {
+    margin-bottom: 16px;
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-2);
+      margin-bottom: 7px;
+    }
+  }
+
+  &__textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  &__footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

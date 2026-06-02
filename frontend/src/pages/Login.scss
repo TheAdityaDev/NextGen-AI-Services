@@ -1,0 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap');
+
+// ── Tokens ──────────────────────────────────────────
+$bg:           #0f0f0f;
+$border:       rgba(255, 255, 255, 0.08);
+$border-focus: rgba(255, 255, 255, 0.32);
+$text:         #fafafa;
+$muted:        rgba(250, 250, 250, 0.42);
+$dim:          rgba(250, 250, 250, 0.24);
+$error:        rgba(255, 100, 100, 0.85);
+$green:        rgba(160, 255, 180, 0.85);
+
+// ── Layout ──────────────────────────────────────────
+.login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 60px;
+  background: $bg;
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  // ── Background ──
+  &__bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+
+    &--1 {
+      width: 480px;
+      height: 380px;
+      top: -8%;
+      right: 0%;
+      background: radial-gradient(
+        ellipse,
+        rgba(255, 255, 255, 0.022) 0%,
+        transparent 70%
+      );
+    }
+
+    &--2 {
+      width: 360px;
+      height: 280px;
+      bottom: 0;
+      left: -4%;
+      background: radial-gradient(
+        ellipse,
+        rgba(160, 255, 180, 0.014) 0%,
+        transparent 70%
+      );
+    }
+  }
+
+  &__bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(
+      ellipse 70% 70% at 50% 45%,
+      black 15%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 70% 70% at 50% 45%,
+      black 15%,
+      transparent 100%
+    );
+  }
+
+  // ── Card ──
+  &__card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.028);
+    border: 1px solid $border;
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    animation: cardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.988);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 28px 22px;
+      border-radius: 16px;
+    }
+  }
+
+  // ── Header ──
+  &__header {
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(28px, 5vw, 36px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.08;
+    letter-spacing: -0.9px;
+    color: $text;
+    margin-bottom: 8px;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: $muted;
+    line-height: 1.6;
+  }
+
+  // ── Form ──
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  // ── Error message ──
+  &__error {
+    background: rgba(255, 100, 100, 0.08);
+    border: 1px solid rgba(255, 100, 100, 0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: $error;
+    text-align: center;
+  }
+
+  // ── Role selection ──
+  &__roles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  // ── Back button ──
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(250, 250, 250, 0.4);
+    font-size: 13px;
+    font-family: inherit;
+    padding: 0;
+    margin-bottom: 16px;
+    transition: color 0.18s;
+
+    &:hover { color: rgba(250, 250, 250, 0.75); }
+  }
+
+  // ── Submit ──
+  &__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 22px;
+    margin-top: 6px;
+    background: $text;
+    color: #0f0f0f;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.18s, opacity 0.18s, transform 0.14s;
+
+    &:hover { background: #e8e8e8; }
+    &:active { transform: scale(0.975); }
+
+    // full width only on the form step
+    &--full {
+      width: 100%;
+    }
+
+    &--loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &--disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  // ── Arrow animation ──
+  &__arrow {
+    display: inline-flex;
+    overflow: hidden;
+    width: 14px;
+    height: 14px;
+    position: relative;
+    flex-shrink: 0;
+
+    &-default,
+    &-hover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      inset: 0;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity  0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    &-default {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    &-hover {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+
+  &__submit:hover &__arrow-default {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  &__submit:hover &__arrow-hover {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  // ── Spinner ──
+  &__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-top-color: #0f0f0f;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  }
+
+  // ── Footer ──
+  &__footer {
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+    font-size: 13.5px;
+    color: $muted;
+
+    a {
+      color: $text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(255, 255, 255, 0.24);
+      transition: text-decoration-color 0.18s;
+
+      &:hover {
+        text-decoration-color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+
+  // ── Success state ──
+  &__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 12px 0 8px;
+    animation: successIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes successIn {
+      from { opacity: 0; transform: scale(0.94); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  }
+
+  &__success-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(160, 255, 180, 0.06);
+    border: 1px solid rgba(160, 255, 180, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__success-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px;
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: -0.6px;
+    color: $text;
+  }
+
+  &__success-sub {
+    font-size: 13.5px;
+    color: $muted;
+    line-height: 1.65;
+
+    strong {
+      color: rgba(250, 250, 250, 0.75);
+      font-weight: 500;
+    }
+  }
+
+  &__success-bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  &__success-fill {
+    height: 100%;
+    background: rgba(160, 255, 180, 0.7);
+    border-radius: 2px;
+    animation: fillBar 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+    @keyframes fillBar {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+  }
+}
+
+// ── Field primitives ─────────────────────────────────
+.lf {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  position: relative;
+
+  label {
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(250, 250, 250, 0.6);
+  }
+
+  input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: $text;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+
+    &::placeholder { color: rgba(250, 250, 250, 0.2); }
+
+    &:focus {
+      border-color: $border-focus;
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  &--password input {
+    padding-right: 44px;
+  }
+
+  &--error input {
+    border-color: rgba(255, 100, 100, 0.4);
+    box-shadow: 0 0 0 3px rgba(255, 100, 100, 0.06);
+    animation: fieldErrorShake 0.4s ease-out;
+  }
+
+  @keyframes fieldErrorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  &--success input {
+    border-color: rgba(160, 255, 180, 0.4);
+    box-shadow: 0 0 0 3px rgba(160, 255, 180, 0.06);
+  }
+
+  &__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__forgot {
+    font-size: 12px;
+    color: $dim;
+    text-decoration: none;
+    transition: color 0.18s;
+
+    &:hover { color: rgba(250, 250, 250, 0.65); }
+  }
+
+  &__eye {
+    position: absolute;
+    right: 13px;
+    bottom: 11px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(250, 250, 250, 0.3);
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    transition: color 0.18s;
+
+    &:hover { color: rgba(250, 250, 250, 0.7); }
+  }
+
+  &__error {
+    font-size: 11.5px;
+    color: $error;
+    letter-spacing: 0.01em;
+  }
+}

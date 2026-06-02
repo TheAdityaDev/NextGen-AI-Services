@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+.faq {
+  background: #020202;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(40px, 6vw, 60px) clamp(24px, 8vw, 0px);
+  font-family: 'DM Sans', sans-serif;
+
+  &__label-top {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 32px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 100px;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(250, 250, 250, 0.42);
+    }
+  }
+
+  &__inner {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 5vw, 48px);
+  }
+
+  // ── Header ──
+  &__header {
+    margin-bottom: clamp(40px, 6vw, 72px);
+    text-align: center;
+  }
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: -1px;
+    color: #fafafa;
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  &__title-em {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-style: italic;
+    opacity: 0.82;
+  }
+
+  &__sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: rgba(250, 250, 250, 0.42);
+    line-height: 1.65;
+
+    a {
+      color: rgba(250, 250, 250, 0.7);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(250, 250, 250, 0.2);
+      transition: color 0.18s, text-decoration-color 0.18s;
+
+      &:hover {
+        color: #fafafa;
+        text-decoration-color: rgba(250, 250, 250, 0.6);
+      }
+    }
+  }
+
+  // ── List ──
+  &__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  // ── Item ──
+  &__item {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    transition: border-color 0.2s;
+
+    &:last-child {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    &--open {
+      border-top-color: rgba(255, 255, 255, 0.12);
+
+      .faq__question-text {
+        color: #fafafa;
+      }
+
+      .faq__icon {
+        color: rgba(250, 250, 250, 0.9);
+      }
+    }
+  }
+
+  // ── Question button ──
+  &__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: opacity 0.15s;
+
+    &:hover .faq__question-text {
+      color: #fafafa;
+    }
+  }
+
+  &__question-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-weight: 400;
+    color: rgba(250, 250, 250, 0.65);
+    line-height: 1.5;
+    transition: color 0.18s;
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    color: rgba(250, 250, 250, 0.3);
+    display: flex;
+    align-items: center;
+    transition: color 0.18s, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  // ── Answer — CSS-only accordion using max-height ──
+  &__answer-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+
+    .faq__item--open & {
+      grid-template-rows: 1fr;
+    }
+  }
+
+  &__answer {
+    overflow: hidden;
+
+    p {
+      padding: 0 0 22px 0;
+      padding-left: 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(13px, 1.1vw, 14.5px);
+      font-weight: 400;
+      line-height: 1.78;
+      color: rgba(250, 250, 250, 0.42);
+      border-left: 2px solid rgba(255, 255, 255, 0.08);
+      padding-left: 18px;
+      margin: 0;
+    }
+  }
+
+  // ── Mobile ──
+  @media (max-width: 600px) {
+    padding: 72px 0 60px;
+
+    &__inner { padding: 0 20px; }
+
+    &__question { padding: 17px 0; }
+
+    &__answer p { padding-bottom: 18px; }
+  }
+}

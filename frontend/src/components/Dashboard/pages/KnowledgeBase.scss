@@ -1,0 +1,20 @@
+.kb {
+  &__toolbar {
+    display: flex; gap: 12px; margin-bottom: 20px; align-items: center;
+  }
+  &__search { flex: 1; max-width: 360px; }
+  &__item-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; margin-bottom: 8px;
+  }
+  &__item-q { font-size: 14px; font-weight: 600; color: var(--text); }
+  &__item-a { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 12px; }
+  &__item-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 10px; border-top: 1px solid var(--border);
+  }
+  &__item-used {
+    font-size: 11.5px; color: var(--text-3);
+    strong { color: var(--green); }
+  }
+}

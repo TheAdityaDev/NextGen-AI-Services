@@ -1,0 +1,245 @@
+.billing {
+
+  // ── Toggle ──────────────────────────────────────────
+  &__toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  &__toggle-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+
+    &.active { color: var(--text); }
+  }
+
+  &__save-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-3);
+    letter-spacing: 0.03em;
+  }
+
+  &__toggle {
+    width: 40px;
+    height: 22px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border);
+    position: relative;
+    cursor: pointer;
+    transition: background 0.25s;
+    padding: 0;
+    flex-shrink: 0;
+
+    &--on {
+      background: rgba(255,255,255,0.15);
+
+      .billing__toggle-thumb {
+        transform: translateX(18px);
+        background: var(--text);
+      }
+    }
+  }
+
+  &__toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.25s;
+  }
+
+  // ── Cards grid ──────────────────────────────────────
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    align-items: stretch;
+
+    @media (max-width: 960px) { grid-template-columns: 1fr; max-width: 420px; }
+  }
+
+  // ── Card ────────────────────────────────────────────
+  &__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+
+    &:hover { border-color: var(--border-2); }
+
+    &--popular {
+      background: var(--surface-2);
+      border-color: rgba(255,255,255,0.11);
+    }
+
+    &--current {
+      border-color: rgba(160,255,180,0.2);
+      background: rgba(160,255,180,0.02);
+    }
+  }
+
+  &__card-glow {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  &__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  &__plan-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  &__plan-tagline {
+    font-size: 12px;
+    color: var(--text-3);
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+
+  // ── Price ────────────────────────────────────────────
+  &__price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+
+  &__price-free {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  &__price-dollar {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-2);
+    align-self: flex-start;
+    margin-top: 8px;
+    line-height: 1;
+  }
+
+  &__price-num {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  &__price-period {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-left: 4px;
+    align-self: flex-end;
+    margin-bottom: 6px;
+  }
+
+  &__divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 20px;
+  }
+
+  // ── Features ─────────────────────────────────────────
+  &__features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    margin-bottom: 24px;
+    padding: 0;
+  }
+
+  &__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  &__check {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--text-3);
+  }
+
+  // ── CTA ──────────────────────────────────────────────
+  &__cta {
+    width: 100%;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text-2);
+    background: transparent;
+    border: 1px solid var(--border-2);
+    transition: all 0.18s;
+    font-family: var(--font);
+    margin-top: auto;
+
+    &:hover:not(:disabled) {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    &--current {
+      color: var(--green);
+      border-color: rgba(160,255,180,0.25);
+      background: rgba(160,255,180,0.04);
+      cursor: default;
+    }
+
+    &:disabled:not(.billing__cta--current) {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+# dependencies
+node_modules
+frontend/node_modules
+backend/node_modules
+
+# environment files
+.env
+frontend/.env
+backend/.env
+.env.production
+
+# builds
+dist
+build
+
+# logs
+*.log
+
+# editors
+.vscode
+.idea
+
+# Widget testing files
+test-widget*.html
+debug-widget*.html
+simple-widget*.html
+
+AI_NOT_WORKING_FIX.md
+AI_FIX_ACTION_PLAN.md
+RENDER_ENV_CHECKLIST.md
+README.md

@@ -1,0 +1,968 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300;1,9..144,500&display=swap');
+
+// ── Tokens ───────────────────────────────────────────
+$bg:             #0f0f0f;
+$surface:        rgba(255, 255, 255, 0.035);
+$surface-hover:  rgba(255, 255, 255, 0.06);
+$border:         rgba(255, 255, 255, 0.08);
+$border-hover:   rgba(255, 255, 255, 0.18);
+$border-active:  rgba(255, 255, 255, 0.55);
+$text:           #fafafa;
+$text-muted:     rgba(250, 250, 250, 0.45);
+$text-dim:       rgba(250, 250, 250, 0.28);
+$accent:         #fafafa;
+$error:          rgba(255, 100, 100, 0.85);
+$green:          rgba(160, 255, 180, 0.85);
+
+// ── Layout ───────────────────────────────────────────
+.onboarding {
+  min-height: 100vh;
+  background: $bg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 60px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  // ── Background ──
+  &__bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &__bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+
+    &--1 {
+      width: 500px;
+      height: 400px;
+      top: -10%;
+      left: -5%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.025) 0%, transparent 70%);
+    }
+
+    &--2 {
+      width: 400px;
+      height: 300px;
+      bottom: 0;
+      right: -5%;
+      background: radial-gradient(ellipse, rgba(160,255,180,0.015) 0%, transparent 70%);
+    }
+  }
+
+  &__bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 20%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black 20%, transparent 100%);
+  }
+
+  // ── Card ──
+  &__card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255,255,255,0.028);
+    border: 1px solid $border;
+    border-radius: 20px;
+    padding: 40px 40px 36px;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 560px) {
+      padding: 28px 22px 28px;
+      border-radius: 16px;
+    }
+  }
+
+  // ── Progress ──
+  &__progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  &__progress-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $text-dim;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__progress-track {
+    flex: 1;
+    height: 2px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    background: $text;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  // ── Header ──
+  &__header {
+    margin-bottom: 32px;
+  }
+
+  &__title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    letter-spacing: -0.8px;
+    color: $text;
+    margin-bottom: 8px;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: $text-muted;
+    line-height: 1.6;
+  }
+
+  // ── Step transition ──
+  &__step {
+    &--forward {
+      animation: stepForward 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    &--back {
+      animation: stepBack 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes stepForward {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes stepBack {
+      from { opacity: 0; transform: translateX(-18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  }
+
+  // ── Sign in ──
+  &__signin {
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+    font-size: 13.5px;
+    color: $text-muted;
+
+    a {
+      color: $text;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(255,255,255,0.25);
+      transition: text-decoration-color 0.18s;
+
+      &:hover {
+        text-decoration-color: rgba(255,255,255,0.7);
+      }
+    }
+  }
+
+  // ── Error message ──
+  &__error {
+    background: rgba(255, 100, 100, 0.08);
+    border: 1px solid rgba(255, 100, 100, 0.25);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: $error;
+    text-align: center;
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// PASSWORD STRENGTH INDICATOR
+// ──────────────────────────────────────────────────────
+
+.password-strength {
+  margin-top: 12px;
+  
+  &__requirements {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  &__requirement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: $text-dim;
+    transition: color 0.2s ease;
+    
+    &--checked {
+      color: $green;
+    }
+  }
+  
+  &__check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+    
+    .password-strength__requirement--checked & {
+      background: rgba(160, 255, 180, 0.15);
+      border-color: rgba(160, 255, 180, 0.3);
+      color: $green;
+    }
+  }
+  
+  &__label {
+    line-height: 1.4;
+  }
+  
+  &__meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  &__meter-track {
+    flex: 1;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  
+  &__meter-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    
+    &--weak {
+      background: rgba(255, 100, 100, 0.8);
+    }
+    
+    &--medium {
+      background: rgba(255, 200, 100, 0.8);
+    }
+    
+    &--strong {
+      background: $green;
+    }
+  }
+  
+  &__level {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    min-width: 40px;
+    text-align: right;
+    
+    &--weak {
+      color: rgba(255, 100, 100, 0.8);
+    }
+    
+    &--medium {
+      color: rgba(255, 200, 100, 0.8);
+    }
+    
+    &--strong {
+      color: $green;
+    }
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// SHARED FORM PRIMITIVES
+// ──────────────────────────────────────────────────────
+
+// ── Fields ──
+.ob-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
+
+  &:last-child { margin-bottom: 0; }
+
+  label {
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(250, 250, 250, 0.65);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    color: #fafafa;
+    outline: none;
+    transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+    -webkit-font-smoothing: antialiased;
+
+    &::placeholder { color: rgba(250,250,250,0.22); }
+
+    &:focus {
+      border-color: rgba(255,255,255,0.32);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 88px;
+    line-height: 1.6;
+  }
+
+  &--password {
+    position: relative;
+
+    input { padding-right: 44px; }
+  }
+
+  &__eye {
+    position: absolute;
+    right: 13px;
+    bottom: 11px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(250,250,250,0.35);
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    transition: color 0.18s;
+
+    &:hover { color: rgba(250,250,250,0.75); }
+  }
+
+  &__optional {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(250,250,250,0.28);
+    letter-spacing: 0.04em;
+  }
+
+  &__helper {
+    font-size: 11px;
+    color: rgba(250,250,250,0.35);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  &__error {
+    font-size: 11.5px;
+    color: $error;
+    letter-spacing: 0.01em;
+    margin-top: 6px;
+    opacity: 0;
+    transform: translateY(-4px);
+    animation: errorSlideIn 0.2s ease-out forwards;
+    line-height: 1.4;
+  }
+
+  @keyframes errorSlideIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  &--error {
+    input, textarea, .ob-select-wrap {
+      border-color: rgba(255,100,100,0.45) !important;
+      box-shadow: 0 0 0 3px rgba(255,100,100,0.06) !important;
+      animation: fieldErrorShake 0.4s ease-out;
+    }
+  }
+
+  @keyframes fieldErrorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  &--success {
+    input, textarea, .ob-select-wrap {
+      border-color: rgba(160, 255, 180, 0.4) !important;
+      box-shadow: 0 0 0 3px rgba(160, 255, 180, 0.06) !important;
+    }
+  }
+
+  // Select
+  &--select { position: relative; }
+
+  &--inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0;
+    flex: 1;
+  }
+
+  &--code input {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 15px;
+    letter-spacing: 0.06em;
+  }
+}
+
+.ob-select-wrap {
+  position: relative;
+
+  select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 10px;
+    padding: 11px 40px 11px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #fafafa;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.18s, background 0.18s;
+
+    option {
+      background: #1a1a1a;
+      color: #fafafa;
+    }
+
+    &:focus {
+      border-color: rgba(255,255,255,0.32);
+      background: rgba(255,255,255,0.06);
+    }
+  }
+
+  svg {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: rgba(250,250,250,0.35);
+  }
+}
+
+.ob-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  @media (max-width: 440px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ob-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+
+  &::before, &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  span {
+    font-size: 11.5px;
+    color: rgba(250,250,250,0.28);
+    letter-spacing: 0.04em;
+  }
+}
+
+// ── Buttons ──
+.ob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 22px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s ease;
+
+  &:active { transform: scale(0.974); }
+
+  &--primary {
+    background: #fafafa;
+    color: #0f0f0f;
+    flex: 1;
+
+    &:hover { background: #e8e8e8; }
+
+    &.ob-btn--disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: rgba(250,250,250,0.55);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 11px 18px;
+
+    &:hover {
+      color: #fafafa;
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.04);
+    }
+  }
+
+  &--google {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    color: rgba(250,250,250,0.8);
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 4px;
+
+    &:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.18);
+      color: #fafafa;
+    }
+  }
+}
+
+.ob-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+// ── Arrow animation ──
+.ob-arrow {
+  display: inline-flex;
+  overflow: hidden;
+  width: 14px;
+  height: 14px;
+  position: relative;
+  flex-shrink: 0;
+
+  &__default,
+  &__hover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity  0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__default {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &__hover {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.ob-btn--primary:hover .ob-arrow__default {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.ob-btn--primary:hover .ob-arrow__hover {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+// Back button — arrow slides right-to-left
+.ob-arrow--back .ob-arrow__default {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.ob-arrow--back .ob-arrow__hover {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.ob-btn--ghost:hover .ob-arrow--back .ob-arrow__default {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.ob-btn--ghost:hover .ob-arrow--back .ob-arrow__hover {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+// ──────────────────────────────────────────────────────
+// ROLE SELECT
+// ──────────────────────────────────────────────────────
+.role-select {
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+}
+
+.role-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 18px 18px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s, border-color 0.22s, box-shadow 0.22s, transform 0.15s;
+  position: relative;
+
+  &:hover {
+    background: rgba(255,255,255,0.055);
+    border-color: rgba(255,255,255,0.16);
+    transform: translateY(-1px);
+  }
+
+  &--active {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.45);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 4px 24px rgba(0,0,0,0.3);
+
+    .role-card__icon {
+      color: #fafafa;
+      opacity: 1;
+    }
+  }
+
+  &__icon {
+    color: rgba(250,250,250,0.45);
+    opacity: 0.8;
+    flex-shrink: 0;
+    transition: color 0.18s, opacity 0.18s;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+  }
+
+  &__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fafafa;
+    letter-spacing: 0.01em;
+  }
+
+  &__desc {
+    font-size: 12.5px;
+    color: rgba(250,250,250,0.4);
+    line-height: 1.5;
+  }
+
+  &__check {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.18s;
+  }
+
+  &--active &__check {
+    border-color: transparent;
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// COMPANY IDENTITY — logo upload
+// ──────────────────────────────────────────────────────
+.logo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100px;
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 12px;
+  cursor: pointer;
+  color: rgba(250,250,250,0.4);
+  font-size: 13px;
+  margin-bottom: 20px;
+  transition: border-color 0.18s, background 0.18s, color 0.18s;
+
+  small {
+    font-size: 11px;
+    color: rgba(250,250,250,0.22);
+  }
+
+  &:hover {
+    border-color: rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.03);
+    color: rgba(250,250,250,0.7);
+  }
+
+  &__preview {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// SUPPORT CONFIG — pills + hours
+// ──────────────────────────────────────────────────────
+.pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: rgba(250,250,250,0.5);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.18s;
+
+  &:hover {
+    color: #fafafa;
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.07);
+  }
+
+  &--active {
+    color: #0f0f0f;
+    background: #fafafa;
+    border-color: #fafafa;
+
+    &:hover {
+      background: #e8e8e8;
+      border-color: #e8e8e8;
+    }
+  }
+}
+
+.hours-row {
+  display: flex;
+  gap: 12px;
+
+  @media (max-width: 440px) {
+    flex-direction: column;
+  }
+}
+
+.hours-label {
+  font-size: 12px;
+  color: rgba(250,250,250,0.4);
+  white-space: nowrap;
+}
+
+// ──────────────────────────────────────────────────────
+// AGENT — join company
+// ──────────────────────────────────────────────────────
+.join-company {
+  &__hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px 16px;
+    background: rgba(160, 255, 180, 0.04);
+    border: 1px solid rgba(160, 255, 180, 0.12);
+    border-radius: 11px;
+    margin-bottom: 22px;
+    color: rgba(160,255,180,0.65);
+    font-size: 13px;
+    line-height: 1.6;
+
+    p { margin: 0; }
+    strong { color: rgba(160,255,180,0.9); font-weight: 500; }
+
+    svg { flex-shrink: 0; margin-top: 1px; }
+  }
+
+  &__note {
+    font-size: 12px;
+    color: rgba(250,250,250,0.28);
+    line-height: 1.6;
+    margin-top: 12px;
+  }
+}
+
+// ──────────────────────────────────────────────────────
+// SUCCESS SCREEN
+// ──────────────────────────────────────────────────────
+.ob-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 8px 0;
+  animation: successIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes successIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  &__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(160, 255, 180, 0.06);
+    border: 1px solid rgba(160, 255, 180, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  &__title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: -0.6px;
+    color: #fafafa;
+    line-height: 1.2;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: rgba(250, 250, 250, 0.45);
+    line-height: 1.65;
+    max-width: 400px;
+  }
+
+  &__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 4px 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    color: rgba(250, 250, 250, 0.6);
+  }
+
+  &__bar {
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 4px 0;
+  }
+
+  &__fill {
+    height: 100%;
+    background: rgba(160, 255, 180, 0.6);
+    border-radius: 2px;
+    animation: fillBar 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+    @keyframes fillBar {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: #fafafa;
+    color: #0f0f0f;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.14s;
+    margin-top: 4px;
+
+    &:hover { background: #e8e8e8; }
+    &:active { transform: scale(0.975); }
+  }
+}

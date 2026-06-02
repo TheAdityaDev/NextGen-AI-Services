@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 68px;
+  background: rgba(15, 15, 15, 0.72);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  animation: navFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes navFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  // ── Logo ──
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .logo__icon {
+    width: 23px;
+    height: 24px;
+    flex-shrink: 0;
+    opacity: 0.95;
+  }
+
+  &__wordmark {
+    display: flex;
+    align-items: baseline;
+    line-height: 1;
+  }
+
+  &__chat {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.4px;
+    color: #fafafa;
+  }
+
+  &__frame {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 21px;
+    font-style: italic;
+    letter-spacing: -0.2px;
+    color: #fafafa;
+    opacity: 0.88;
+  }
+
+  // ── Nav Links ──
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    a {
+      display: block;
+      padding: 7px 16px;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: rgba(250, 250, 250, 0.72);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: color 0.18s ease, background 0.18s ease;
+
+      &:hover {
+        color: #fafafa;
+        background: rgba(255, 255, 255, 0.06);
+      }
+    }
+
+    // Hide on mobile screens
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  // ── Actions ──
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 0 20px;
+    height: 38px;
+    font-family: inherit;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.18s ease, border-color 0.18s ease,
+      background 0.18s ease, opacity 0.18s ease, transform 0.15s ease;
+
+    &:active { transform: scale(0.975); }
+
+    &-inner {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    &:hover &-inner {
+      transform: translateY(-38px);
+    }
+
+    &-top,
+    &-bottom {
+      display: flex;
+      align-items: center;
+      height: 38px;
+      white-space: nowrap;
+    }
+
+    &--login {
+      font-weight: 400;
+      color: rgba(250, 250, 250, 0.72);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+
+      &:hover {
+        color: #fafafa;
+        border-color: rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.04);
+      }
+    }
+
+    &--signup {
+      font-weight: 500;
+      color: #0f0f0f;
+      background: #fafafa;
+      border: 1px solid transparent;
+
+      &:hover {
+        opacity: 0.88;
+        background: #e8e8e8;
+      }
+    }
+  }
+
+  // ── Dashboard & Workspace Buttons ──
+  &__btn {
+    &--dashboard,
+    &--workspace {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(250, 250, 250, 0.9);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fafafa;
+      }
+
+      .navbar__btn-inner {
+        .navbar__btn-top,
+        .navbar__btn-bottom {
+          color: inherit;
+        }
+      }
+    }
+  }
+}

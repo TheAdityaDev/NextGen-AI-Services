@@ -1,0 +1,472 @@
+{
+  "info": {
+    "_postman_id": "c1f2e620-3058-4720-bbd8-f86a07cfbf65",
+    "name": "NextGen AI Services",
+    "description": "API collection for NextGen AI Services Customer Support SaaS, preconfigured with request payloads and dummy responses for testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@testcorp.com\",\n  \"password\": \"securePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Successful Login",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful.\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"60a5d2b78b7b752df49735d4\",\n      \"firstName\": \"Bob\",\n      \"lastName\": \"Builder\",\n      \"fullName\": \"Bob Builder\",\n      \"email\": \"admin@testcorp.com\",\n      \"role\": \"company_admin\",\n      \"tenantId\": \"tenant_abc123\",\n      \"isVerified\": true\n    },\n    \"tokens\": {\n      \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n      \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Profile Retrieved",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"User retrieved.\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"60a5d2b78b7b752df49735d4\",\n      \"firstName\": \"Bob\",\n      \"lastName\": \"Builder\",\n      \"fullName\": \"Bob Builder\",\n      \"email\": \"admin@testcorp.com\",\n      \"role\": \"company_admin\",\n      \"tenantId\": \"tenant_abc123\",\n      \"isVerified\": true\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "List Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tickets?page=1&limit=20&status=open",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tickets"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "open"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Tickets List",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Tickets retrieved.\",\n  \"data\": {\n    \"tickets\": [\n      {\n        \"_id\": \"6a1e764aa45c1ff36a915449\",\n        \"tenantId\": \"tenant_abc123\",\n        \"ticketNumber\": 1001,\n        \"title\": \"Login Failure\",\n        \"description\": \"Unable to log in to dashboard.\",\n        \"status\": \"open\",\n        \"priority\": \"high\",\n        \"assignedTo\": null,\n        \"customerName\": \"John Doe\",\n        \"customerEmail\": \"john@doe.com\",\n        \"channel\": \"widget\",\n        \"createdAt\": \"2026-06-02T06:00:00.000Z\",\n        \"updatedAt\": \"2026-06-02T06:00:00.000Z\"\n      }\n    ],\n    \"pagination\": {\n      \"total\": 1,\n      \"page\": 1,\n      \"limit\": 20,\n      \"totalPages\": 1\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Payment Issue\",\n  \"description\": \"I was charged twice for subscription.\",\n  \"priority\": \"high\",\n  \"customerName\": \"Jane Customer\",\n  \"customerEmail\": \"jane@customer.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tickets",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tickets"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Ticket Created",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Ticket created.\",\n  \"data\": {\n    \"ticket\": {\n      \"_id\": \"60a5d6278b7b752df49735e2\",\n      \"tenantId\": \"tenant_abc123\",\n      \"ticketNumber\": 1002,\n      \"title\": \"Payment Issue\",\n      \"description\": \"I was charged twice for subscription.\",\n      \"status\": \"open\",\n      \"priority\": \"high\",\n      \"assignedTo\": null,\n      \"customerName\": \"Jane Customer\",\n      \"customerEmail\": \"jane@customer.com\",\n      \"channel\": \"live_chat\",\n      \"createdAt\": \"2026-06-02T06:34:00.000Z\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Ticket (RBAC)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\",\n  \"assignedTo\": \"60a5d2b78b7b752df49735d4\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tickets/6a1e764aa45c1ff36a915449",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tickets",
+                "6a1e764aa45c1ff36a915449"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Ticket Updated",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Ticket updated.\",\n  \"data\": {\n    \"ticket\": {\n      \"_id\": \"6a1e764aa45c1ff36a915449\",\n      \"tenantId\": \"tenant_abc123\",\n      \"ticketNumber\": 1001,\n      \"title\": \"Login Failure\",\n      \"status\": \"in_progress\",\n      \"priority\": \"high\",\n      \"assignedTo\": {\n        \"_id\": \"60a5d2b78b7b752df49735d4\",\n        \"firstName\": \"Bob\",\n        \"lastName\": \"Builder\",\n        \"email\": \"admin@testcorp.com\",\n        \"role\": \"company_admin\"\n      },\n      \"customerName\": \"John Doe\",\n      \"customerEmail\": \"john@doe.com\",\n      \"createdAt\": \"2026-06-02T06:00:00.000Z\",\n      \"updatedAt\": \"2026-06-02T06:35:00.000Z\"\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inbox & AI Services",
+      "item": [
+        {
+          "name": "Get Conversations List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inbox/conversations?status=open,in_progress",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inbox",
+                "conversations"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "open,in_progress"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Conversations List",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Conversations retrieved.\",\n  \"data\": {\n    \"conversations\": [\n      {\n        \"_id\": \"6a1e764aa45c1ff36a915449\",\n        \"tenantId\": \"tenant_abc123\",\n        \"ticketNumber\": 1001,\n        \"title\": \"Login Failure\",\n        \"status\": \"in_progress\",\n        \"priority\": \"high\",\n        \"assignedTo\": {\n          \"firstName\": \"Bob\",\n          \"lastName\": \"Builder\"\n        },\n        \"customerName\": \"John Doe\",\n        \"lastMessage\": {\n          \"content\": \"Hello, please help!\",\n          \"senderType\": \"customer\",\n          \"createdAt\": \"2026-06-02T06:10:00.000Z\"\n        }\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Messages (Thread)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inbox/6a1e764aa45c1ff36a915449",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inbox",
+                "6a1e764aa45c1ff36a915449"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Messages Thread",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Messages retrieved.\",\n  \"data\": {\n    \"ticket\": {\n      \"_id\": \"6a1e764aa45c1ff36a915449\",\n      \"ticketNumber\": 1001,\n      \"status\": \"in_progress\",\n      \"assignedTo\": {\n        \"_id\": \"60a5d2b78b7b752df49735d4\",\n        \"firstName\": \"Bob\",\n        \"lastName\": \"Builder\"\n      }\n    },\n    \"messages\": [\n      {\n        \"_id\": \"60a5db278b7b752df49735f1\",\n        \"senderType\": \"customer\",\n        \"content\": \"Hello, please help!\",\n        \"createdAt\": \"2026-06-02T06:10:00.000Z\"\n      },\n      {\n        \"_id\": \"60a5db908b7b752df49735f5\",\n        \"senderType\": \"agent\",\n        \"senderId\": {\n          \"firstName\": \"Bob\",\n          \"lastName\": \"Builder\",\n          \"role\": \"company_admin\"\n        },\n        \"content\": \"Sure, let me check that.\",\n        \"createdAt\": \"2026-06-02T06:15:00.000Z\"\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Send Reply Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"I have verified and unlocked your account. Please check.\",\n  \"senderType\": \"agent\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inbox/6a1e764aa45c1ff36a915449/send",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inbox",
+                "6a1e764aa45c1ff36a915449",
+                "send"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Message Sent",
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Message sent.\",\n  \"data\": {\n    \"message\": {\n      \"_id\": \"60a5dc708b7b752df4973602\",\n      \"tenantId\": \"tenant_abc123\",\n      \"ticketId\": \"6a1e764aa45c1ff36a915449\",\n      \"senderType\": \"agent\",\n      \"senderId\": \"60a5d2b78b7b752df49735d4\",\n      \"content\": \"I have verified and unlocked your account. Please check.\",\n      \"createdAt\": \"2026-06-02T06:36:00.000Z\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Summarize Conversation (Gemini)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inbox/6a1e764aa45c1ff36a915449/summarize",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inbox",
+                "6a1e764aa45c1ff36a915449",
+                "summarize"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Conversation Summarized",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Conversation summarized.\",\n  \"data\": {\n    \"summary\": \"- Customer has trouble logging in to dashboard.\\n- Agent Bob Builder replied and is investigating the issue.\\n- Customer is awaiting confirmation.\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Settings & AI Configuration",
+      "item": [
+        {
+          "name": "Get AI Configuration",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/ai-config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-config"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "AI Config Details",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"AI settings retrieved.\",\n  \"data\": {\n    \"config\": {\n      \"isEnabled\": true,\n      \"confidenceThreshold\": 0.75,\n      \"responseTone\": \"professional\",\n      \"systemPrompt\": \"You are a helpful customer support assistant.\",\n      \"escalationKeywords\": [\"refund\", \"cancel\", \"angry\"]\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update AI Configuration",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confidenceThreshold\": 0.8,\n  \"responseTone\": \"friendly\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ai-config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ai-config"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "AI Config Updated",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"AI settings updated.\",\n  \"data\": {\n    \"config\": {\n      \"isEnabled\": true,\n      \"confidenceThreshold\": 0.8,\n      \"responseTone\": \"friendly\",\n      \"systemPrompt\": \"You are a helpful customer support assistant.\"\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Team & Organization",
+      "item": [
+        {
+          "name": "List Team Members",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/team",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "team"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Team List",
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "body": "{\n  \"success\": true,\n  \"message\": \"Team retrieved.\",\n  \"data\": {\n    \"members\": [\n      {\n        \"_id\": \"60a5d2b78b7b752df49735d4\",\n        \"firstName\": \"Bob\",\n        \"lastName\": \"Builder\",\n        \"email\": \"admin@testcorp.com\",\n        \"role\": \"company_admin\",\n        \"isOnline\": true\n      },\n      {\n        \"_id\": \"60a5d9128b7b752df49735e9\",\n        \"firstName\": \"Agent\",\n        \"lastName\": \"Smith\",\n        \"email\": \"agent@testcorp.com\",\n        \"role\": \"support_agent\",\n        \"isOnline\": false\n      }\n    ]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "YOUR_JWT_ACCESS_TOKEN",
+      "type": "string"
+    }
+  ]
+}

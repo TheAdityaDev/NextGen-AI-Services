@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap');
+
+$black  : #020202;
+$panel  : #0f0f0f;
+$text   : #fafafa;
+$muted  : rgba(250, 250, 250, 0.42);
+$border : rgba(255, 255, 255, 0.05);
+$accent : rgba(255, 255, 255, 0.15);
+$accent-solid : rgba(255, 255, 255, 0.75);
+$curve  : 24px;
+$side   : clamp(80px, 12vw, 220px);
+
+/* ── Section ──────────────────────────────────────────────────────────────────*/
+.sp-section {
+  background: $black;
+  padding: clamp(60px, 8vw, 100px) $side;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ── Headline ─────────────────────────────────────────────────────────────────*/
+.sp-headline {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(32px, 4.5vw, 58px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: $text;
+  margin-bottom: 12px;
+}
+
+.sp-gradient {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  opacity: 0.82;
+}
+
+.sp-sub {
+  font-size: 15px;
+  color: $muted;
+  margin-bottom: 52px;
+  line-height: 1.6;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────────*/
+.sp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 1200px;
+  align-items: stretch;
+}
+
+/* ── Card stack ───────────────────────────────────────────────────────────────*/
+.sp-card-stack {
+  position: relative;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-visible .sp-card-stack:nth-child(1) { transition-delay: 0.05s; }
+.sp-visible .sp-card-stack:nth-child(2) { transition-delay: 0.15s; }
+.sp-visible .sp-card-stack:nth-child(3) { transition-delay: 0.25s; }
+
+.sp-visible .sp-card-stack {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Bottom accent card ───────────────────────────────────────────────────────*/
+.sp-card-bottom {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: $curve;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 0;
+}
+
+.sp-card-bottom-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+}
+
+.sp-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: $accent-solid;
+  letter-spacing: 0.02em;
+}
+
+/* ── Main top card ────────────────────────────────────────────────────────────*/
+.sp-card-top {
+  position: relative;
+  z-index: 1;
+  background: $panel;
+  border: 1px solid $border;
+  border-radius: $curve;
+  padding: 32px 24px 28px;
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s ease,
+    border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .sp-card-desc {
+    flex: 1;
+  }
+}
+
+/* ── Icon box ─────────────────────────────────────────────────────────────────*/
+.sp-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: $accent-solid;
+}
+
+/* ── Card text ────────────────────────────────────────────────────────────────*/
+.sp-card-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: $text;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.sp-card-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: $muted;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+/* ── CTA button ───────────────────────────────────────────────────────────────*/
+.sp-card-btn {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 11px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(250, 250, 250, 0.75);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.18s ease;
+}
+
+.sp-card-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: $text;
+}
+
+/* ── Hover state ──────────────────────────────────────────────────────────────*/
+.sp-card-stack:hover .sp-card-top,
+.sp-active .sp-card-top {
+  transform: translateY(-29px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.sp-card-stack:hover .sp-card-bottom,
+.sp-active .sp-card-bottom {
+  bottom: -10px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.sp-card-stack:hover .sp-card-bottom-content,
+.sp-active .sp-card-bottom-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────────*/
+@media (max-width: 960px) {
+  .sp-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sp-section {
+    padding: 52px 20px;
+  }
+
+  .sp-headline {
+    font-size: clamp(28px, 6vw, 40px);
+  }
+
+  .sp-sub {
+    margin-bottom: 40px;
+  }
+}

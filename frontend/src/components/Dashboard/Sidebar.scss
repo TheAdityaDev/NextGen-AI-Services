@@ -1,0 +1,230 @@
+.sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: width 0.28s cubic-bezier(0.16,1,0.3,1);
+  overflow: hidden;
+  z-index: 20;
+
+  &--closed {
+    width: 56px;
+
+    .sidebar__logo { justify-content: center; padding: 0 0 0 0; }
+    .sidebar__item { justify-content: center; padding: 9px 0; }
+    .sidebar__group { padding: 0 8px; }
+
+    // Add hover effect on desktop when closed
+    @media (min-width: 769px) {
+      cursor: pointer;
+      
+      &:hover {
+        background: var(--surface-2);
+        border-right-color: var(--border-2);
+      }
+    }
+  }
+
+  // Mobile behavior - slide in from left
+  @media (max-width: 768px) {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    width: var(--sidebar-w);
+
+    &--open {
+      transform: translateX(0);
+    }
+
+    &--closed {
+      width: var(--sidebar-w);
+      transform: translateX(-100%);
+
+      .sidebar__logo { justify-content: flex-start; padding: 18px 16px 14px; }
+      .sidebar__item { justify-content: flex-start; padding: 8px 10px; }
+      .sidebar__group { padding: 14px 10px 4px; }
+    }
+  }
+
+  // Logo
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--border);
+    min-height: var(--nav-h);
+    flex-shrink: 0;
+  }
+
+  &__logo-icon {
+    flex-shrink: 0;
+  }
+
+  &__logo-name {
+    display: flex;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
+  &__logo-chat {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.3px;
+    color: var(--text);
+  }
+
+  &__logo-frame {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-size: 16px;
+    font-style: italic;
+    letter-spacing: -0.2px;
+    color: var(--text);
+    opacity: 0.75;
+  }
+
+  // Nav
+  &__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+
+    &::-webkit-scrollbar { width: 0; }
+  }
+
+  &__group {
+    padding: 14px 10px 4px;
+  }
+
+  &__group-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    padding: 0 8px;
+    margin-bottom: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    padding: 8px 10px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-2);
+    background: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+    }
+
+    &--active {
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      font-weight: 500;
+    }
+  }
+
+  &__item-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__item-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__item-badge {
+    background: rgba(255,100,100,0.18);
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 100px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  // Footer
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 14px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  &__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--border-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-2);
+    flex-shrink: 0;
+  }
+
+  &__user {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__user-name {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__user-role {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-3);
+  }
+
+  &__status { flex-shrink: 0; }
+
+  &__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 5px rgba(160,255,180,0.5);
+    display: block;
+  }
+}

@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
+
+.logo {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  color: #fafafa;
+
+  &--fixed {
+    position: fixed;
+    top: 20px;
+    left: 28px;
+    z-index: 10;
+  }
+
+  &__icon {
+    width: 23px;
+    height: 24px;
+    -ms-flex-negative: 0;
+        flex-shrink: 0;
+    opacity: 0.95;
+  }
+
+  &__wordmark {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: baseline;
+        -ms-flex-align: baseline;
+            align-items: baseline;
+    line-height: 1;
+  }
+
+  &__chat {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: -0.4px;
+    color: #fafafa;
+    text-decoration: none;
+  }
+
+  &__frame {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 18px;
+    font-style: italic;
+    letter-spacing: -0.2px;
+    color: #fafafa;
+    opacity: 0.88;
+    text-decoration: none;
+  }
+}

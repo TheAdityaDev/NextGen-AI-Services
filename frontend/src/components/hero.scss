@@ -1,0 +1,415 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;   // both columns fill full height
+  position: relative;
+  overflow: hidden;
+  background: #0f0f0f;
+
+  // ── Background glow ──
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 500px;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.03) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // ── Grid texture ──
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(
+      ellipse 80% 60% at 30% 50%,
+      black 30%,
+      transparent 100%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 80% 60% at 30% 50%,
+      black 30%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  // ─────────────────────────────────────────────
+  // LEFT — always 40%, never shrinks
+  // ─────────────────────────────────────────────
+  &__left {
+    position: relative;
+    z-index: 2;
+    width: 40%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    display: flex;
+    align-items: center;           // vertically centre content
+    padding-left: clamp(32px, 5vw, 96px);
+    padding-right: clamp(20px, 3vw, 48px);
+    padding-top: 100px;            // clears navbar
+    padding-bottom: 80px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 28px;
+    width: 100%;
+
+    @keyframes heroSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    // Stagger each direct child
+    & > * {
+      opacity: 0;
+      animation: heroSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    & > *:nth-child(1) { animation-delay: 0.05s; }  // badge
+    & > *:nth-child(2) { animation-delay: 0.18s; }  // headline
+    & > *:nth-child(3) { animation-delay: 0.30s; }  // subtext
+    & > *:nth-child(4) { animation-delay: 0.42s; }  // CTAs
+    & > *:nth-child(5) { animation-delay: 0.54s; }  // stats
+  }
+
+  // ── Badge ──
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 14px 5px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: rgba(250, 250, 250, 0.55);
+    white-space: nowrap;
+  }
+
+  &__badge-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(160, 255, 180, 0.85);
+    box-shadow: 0 0 6px rgba(100, 255, 140, 0.5);
+    flex-shrink: 0;
+    animation: pulse 2.4s ease-in-out infinite;
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+  }
+
+  // ── Headline ──
+  &__headline {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(32px, 3.6vw, 76px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.07;
+    letter-spacing: -1.5px;
+    color: #fafafa;
+
+    em {
+      font-style: normal;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 700;
+      letter-spacing: -2px;
+      font-size: 0.95em;
+      color: #fafafa;
+    }
+  }
+
+  // ── Subtext ──
+  &__sub {
+    font-size: clamp(13px, 1.1vw, 15px);
+    font-weight: 400;
+    line-height: 1.7;
+    color: rgba(250, 250, 250, 0.45);
+    letter-spacing: 0.01em;
+    max-width: 380px;
+  }
+
+  // ── CTAs ──
+  &__ctas {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    font-family: inherit;
+    font-size: clamp(12px, 1vw, 14px);
+    letter-spacing: 0.01em;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.18s, transform 0.15s, background 0.18s,
+      color 0.18s, border-color 0.18s;
+
+    &:active { transform: scale(0.974); }
+
+    &--primary {
+      font-weight: 500;
+      color: #0f0f0f;
+      background: #fafafa;
+      border: none;
+      &:hover { opacity: 0.88; background: #e8e8e8; }
+    }
+
+    &--secondary {
+      font-weight: 400;
+      color: rgba(250, 250, 250, 0.6);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 11px 22px;
+      &:hover {
+        color: #fafafa;
+        border-color: rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.04);
+      }
+    }
+  }
+
+  // ── CTA arrow animation ──
+  &__cta-arrow {
+    display: inline-flex;
+    overflow: hidden;
+    width: 14px;
+    height: 14px;
+    position: relative;
+  }
+
+  &__cta-arrow-default,
+  &__cta-arrow-hover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &__cta-arrow-default {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  &__cta-arrow-hover {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  &__cta--primary:hover &__cta-arrow-default {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  &__cta--primary:hover &__cta-arrow-hover {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  // ── Stats ──
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  &__stat-num {
+    font-size: clamp(15px, 1.3vw, 18px);
+    font-weight: 600;
+    color: #fafafa;
+    letter-spacing: -0.5px;
+  }
+
+  &__stat-label {
+    font-size: clamp(10px, 0.85vw, 11.5px);
+    font-weight: 400;
+    color: rgba(250, 250, 250, 0.35);
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  &__stat-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  // ─────────────────────────────────────────────
+  // RIGHT — flex: 1 takes remaining 60%
+  // Images stacked and centred within the column
+  // ─────────────────────────────────────────────
+  &__right {
+    position: relative;
+    z-index: 2;
+    flex: 1;                       // fills the remaining 60%
+    min-width: 0;                  // prevents flex blowout
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px clamp(16px, 3vw, 48px);
+  }
+
+  // Stacking wrapper — both images sit inside this
+  // relative container, centred in the 60% column
+  &__visual-stack {
+    position: relative;
+    width: min(100%, 560px);       // never overflows its column
+    // Aspect ratio matches your base-layer SVG dimensions.
+    // Adjust 9/7 if your SVG has a different ratio.
+    aspect-ratio: 9 / 7;
+  }
+
+  // Base layer — fills the stack wrapper
+  &__visual {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  // Agent — centred on top of base, slightly smaller
+  &__agent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28.5%;                    // relative to the stack wrapper
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+    animation: agentFloat 4s ease-in-out infinite;
+
+    @keyframes agentFloat {
+      0%, 100% { transform: translate(-50%, -50%); }
+      50%       { transform: translate(-50%, calc(-50% - 12px)); }
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // MOBILE ≤ 768px — unchanged from your original
+  // ─────────────────────────────────────────────
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+      left: 50%;
+      top: 35%;
+    }
+
+    &::after {
+      mask-image: radial-gradient(
+        ellipse 80% 60% at 50% 40%,
+        black 30%,
+        transparent 100%
+      );
+      -webkit-mask-image: radial-gradient(
+        ellipse 80% 60% at 50% 40%,
+        black 30%,
+        transparent 100%
+      );
+    }
+
+    &__left {
+      width: 100%;
+      flex-shrink: unset;
+      padding: 100px 24px 60px;
+      align-items: flex-start;
+    }
+
+    &__content {
+      align-items: center;
+      text-align: center;
+    }
+
+    &__sub    { max-width: 100%; }
+    &__ctas   { justify-content: center; }
+    &__stat   { align-items: center; }
+
+    &__right  { display: none; }
+  }
+
+  // ─────────────────────────────────────────────
+  // TABLET 769px – 1024px
+  // ─────────────────────────────────────────────
+  @media (min-width: 769px) and (max-width: 1024px) {
+    &__left {
+      padding-left: 40px;
+      padding-right: 20px;
+    }
+
+    &__headline {
+      font-size: clamp(28px, 3.8vw, 48px);
+    }
+
+    &__agent {
+      width: 34%;
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // WIDE ≥ 1600px — keep proportions locked
+  // ─────────────────────────────────────────────
+  @media (min-width: 1600px) {
+    &__left {
+      padding-left: 120px;
+    }
+
+    &__visual-stack {
+      width: min(100%, 680px);
+    }
+  }
+}

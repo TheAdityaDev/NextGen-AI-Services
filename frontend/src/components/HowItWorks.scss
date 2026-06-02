@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,300&display=swap');
+
+$black  : #020202;
+$panel  : #0f0f0f;
+$text   : #fafafa;
+$muted  : rgba(250, 250, 250, 0.42);
+$border : rgba(255, 255, 255, 0.05);
+$green  : rgba(160, 255, 180, 0.75);
+$curve  : 24px;
+$side   : clamp(80px, 12vw, 220px);
+
+.hiw {
+  background: $black;
+  padding: clamp(40px, 6vw, 60px) $side clamp(60px, 8vw, 100px);
+  width: 100%;
+
+  &__label-top {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 32px;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 100px;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(250, 250, 250, 0.42);
+    }
+  }
+
+  &__heading {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: clamp(32px, 4.5vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    color: $text;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  &__heading-em {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-style: italic;
+    opacity: 0.82;
+  }
+
+  &__subheading {
+    font-size: 15px;
+    color: $muted;
+    text-align: center;
+    margin-bottom: 52px;
+    line-height: 1.6;
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;        // ← was 3px, now visible gap
+    width: 100%;
+  }
+
+  // mobile
+  @media (max-width: 768px) {
+    padding: clamp(40px, 6vw, 60px) 16px;
+
+    &__label-top {
+      margin-left: 0;
+    }
+  }
+}
+
+// ── Single card — ALL edges curved ────────────────────
+.hiw__card {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 40vh;
+  min-height: 240px;
+  max-height: 320px;
+  background: $panel;
+  overflow: hidden;
+  position: relative;
+
+  border-radius: $curve !important;   // ← all 4 corners on every card
+
+  // remove the old first/last overrides — every card is fully rounded now
+  &:first-child { border-radius: $curve !important; }
+  &:last-child  { border-radius: $curve !important; }
+
+  &--flip {
+    flex-direction: row-reverse;
+
+    .hiw__img-pane {
+      mask-image: linear-gradient(
+        to left,
+        black 55%,
+        rgba(0, 0, 0, 0.4) 80%,
+        transparent 100%
+      );
+      -webkit-mask-image: linear-gradient(
+        to left,
+        black 55%,
+        rgba(0, 0, 0, 0.4) 80%,
+        transparent 100%
+      );
+    }
+
+    .hiw__content {
+      border-left: none;
+      border-right: 1px solid $border;
+    }
+  }
+}
+
+// ── Image pane — 40% ───────────────────────────────────
+.hiw__img-pane {
+  width: 40%;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+
+  mask-image: linear-gradient(
+    to right,
+    black 55%,
+    rgba(0, 0, 0, 0.4) 80%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 55%,
+    rgba(0, 0, 0, 0.4) 80%,
+    transparent 100%
+  );
+}
+
+.hiw__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  opacity: 0.92;
+  user-select: none;
+  pointer-events: none;
+}
+
+// ── Content pane — 60% ─────────────────────────────────
+.hiw__content {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(28px, 4vw, 52px) clamp(32px, 5vw, 72px);
+  position: relative;
+  border-left: 1px solid $border;
+}
+
+// ── Step number ────────────────────────────────────────
+.hiw__num {
+  position: absolute;
+  top: clamp(16px, 2vw, 24px);
+  right: clamp(20px, 2.5vw, 36px);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+
+// ── Small label ────────────────────────────────────────
+.hiw__small-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: $green;
+  margin-bottom: 14px;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $green;
+    flex-shrink: 0;
+  }
+}
+
+// ── Card Heading ───────────────────────────────────────
+.hiw__card-heading {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(24px, 3vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: $text;
+  margin-bottom: 16px;
+}
+
+.hiw__card-heading-em {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 300;
+  font-style: italic;
+  opacity: 0.82;
+}
+
+// ── Description ────────────────────────────────────────
+.hiw__desc {
+  font-size: clamp(14px, 1.3vw, 17px);
+  font-weight: 400;
+  line-height: 1.75;
+  color: $muted;
+  max-width: 440px;
+}
+
+// ── Mobile ─────────────────────────────────────────────
+@media (max-width: 768px) {
+  .hiw__card {
+    flex-direction: column !important;
+    height: auto !important;
+    max-height: unset !important;
+  }
+
+  .hiw__img-pane {
+    width: 100% !important;
+    height: 200px !important;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%) !important;
+  }
+
+  .hiw__content {
+    width: 100% !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid $border !important;
+    padding: 28px 20px 36px !important;
+  }
+
+  .hiw__desc {
+    max-width: 100% !important;
+  }
+}

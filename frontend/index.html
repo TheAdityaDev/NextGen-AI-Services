@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>
+      NextGen AI Services - AI-Powered Customer Support & Live Chat Platform
+    </title>
+    <meta
+      name="title"
+      content="NextGen AI Services - AI-Powered Customer Support & Live Chat Platform"
+    />
+    <meta
+      name="description"
+      content="NextGen AI Services is a multi-tenant SaaS customer support platform. Embed our AI-powered live chat widget, automate repetitive queries with Gemini, and manage tickets in a unified dashboard."
+    />
+    <meta
+      name="keywords"
+      content="customer support, AI support, live chat widget, helpdesk, ticketing system, SaaS support, customer experience, CSAT, customer satisfaction"
+    />
+    <meta name="author" content="NextGen AI Services Team" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#6366f1" />
+
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextgen-ai-services.com/" />
+    <meta
+      property="og:title"
+      content="NextGen AI Services - AI-Powered Customer Support & Live Chat Platform"
+    />
+    <meta
+      property="og:description"
+      content="Embed an AI-powered live chat widget on your website in minutes. Manage tickets, live chats, and team workflows in a unified dashboard."
+    />
+    <meta
+      property="og:image"
+      content="https://nextgen-ai-services.com/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta
+      property="og:image:alt"
+      content="NextGen AI Services Dashboard & Widget Preview"
+    />
+    <meta property="og:site_name" content="NextGen AI Services" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://nextgen-ai-services.com/" />
+    <meta
+      property="twitter:title"
+      content="NextGen AI Services - AI-Powered Customer Support & Live Chat Platform"
+    />
+    <meta
+      property="twitter:description"
+      content="Embed an AI-powered live chat widget on your website in minutes. Manage tickets, live chats, and team workflows in a unified dashboard."
+    />
+    <meta
+      property="twitter:image"
+      content="https://nextgen-ai-services.com/og-image.png"
+    />
+    <meta
+      property="twitter:image:alt"
+      content="NextGen AI Services Dashboard & Widget Preview"
+    />
+
+    <!-- Discord / Slack / Mobile Meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="format-detection" content="telephone=no" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <!-- NextGen AI Services Widget -->
+    <script>
+      window.NextGenAIConfig = window.NextGenAIConfig || {
+        widgetKey: "cfwk_84e6fbc99ebd4174859a",
+        primaryColor: "#56515d",
+        position: "bottom-right",
+      };
+      (function (d, s, id) {
+        var js,
+          fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "http://localhost:5000/api/widget/widget.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, "script", "nextgen-ai-sdk");
+    </script>
+  </body>
+</html>

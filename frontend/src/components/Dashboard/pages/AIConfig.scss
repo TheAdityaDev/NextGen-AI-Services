@@ -1,0 +1,96 @@
+.aiconfig {
+  &__section-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 16px;
+  }
+
+  &__toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__toggle-label {
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  &__field {
+    margin-bottom: 20px;
+
+    &:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-2);
+      margin-bottom: 8px;
+
+      strong { color: var(--text); }
+    }
+  }
+
+  &__slider {
+    width: 100%;
+    appearance: none;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--text);
+      cursor: pointer;
+    }
+  }
+
+  &__slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--text-3);
+    margin-top: 5px;
+  }
+
+  &__select { margin-top: 0; }
+
+  &__prompt-card { display: flex; flex-direction: column; }
+
+  &__prompt-hint {
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  &__prompt-area {
+    width: 100%;
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text);
+    outline: none;
+    resize: vertical;
+    transition: border-color 0.18s;
+
+    &:focus { border-color: var(--border-2); }
+  }
+}
