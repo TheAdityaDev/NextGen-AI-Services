@@ -17,6 +17,8 @@ const Tickets = ({ onNavigateToInbox }) => {
   const [showNewTicketModal, setShowNewTicketModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [tickets, setTickets] = useState([]);
+  const [agents, setAgents] = useState([]);
+  const [assigneeId, setAssigneeId] = useState('unassigned');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [creatingTicket, setCreatingTicket] = useState(false);
@@ -27,6 +29,18 @@ const Tickets = ({ onNavigateToInbox }) => {
     description: '',
     priority: 'medium' // Changed from 'normal' to 'medium' to match backend
   });
+
+  useEffect(() => {
+    if (user?.role === 'company_admin') {
+      apiService.getTeam()
+        .then(res => {
+          if (res.success && res.data && Array.isArray(res.data.members)) {
+            setAgents(res.data.members);
+          }
+        })
+        .catch(err => console.error('Failed to load agents in tickets view:', err));
+    }
+  }, [user]);
 
   useEffect(() => {
     // Load tickets from API immediately
@@ -95,21 +109,23 @@ const Tickets = ({ onNavigateToInbox }) => {
 
     // If unassigned, show assignment modal
     setSelectedTicket(ticket);
+    setAssigneeId(user?.role === 'company_admin' ? (user?._id || user?.id || 'unassigned') : 'unassigned');
     setShowAssignModal(true);
   };
 
   const handleAssignTicket = async () => {
     if (!selectedTicket) return;
 
-    
+    let targetAgentId = user?._id || user?.id;
+    if (user?.role === 'company_admin') {
+      targetAgentId = assigneeId === 'unassigned' ? null : assigneeId;
+    }
 
     try {
       const response = await apiService.updateTicket(selectedTicket._id, {
-        assignedTo: user?._id, // Use actual user ID
-        status: 'in_progress' // Change status to in_progress when assigned
+        assignedTo: targetAgentId,
+        status: targetAgentId ? 'in_progress' : 'open'
       });
-
-      
 
       if (response.success) {
         // Update local state with the actual response data
@@ -315,12 +331,35 @@ const Tickets = ({ onNavigateToInbox }) => {
             </div>
             
             <div className="tickets__modal-body">
-              <p className="tickets__modal-text">
-                You are about to be assigned to ticket <strong>#{selectedTicket.ticketNumber}</strong> for customer <strong>{selectedTicket.customerName || selectedTicket.customer?.name || selectedTicket.customer}</strong>.
-              </p>
-              <p className="tickets__modal-subtext">
-                Once assigned, you'll be responsible for resolving this ticket and communicating with the customer.
-              </p>
+              {user?.role === 'company_admin' ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+                  <p className="tickets__modal-text" style={{ margin: 0 }}>
+                    Select an agent to assign to ticket <strong>#{selectedTicket.ticketNumber}</strong>:
+                  </p>
+                  <select
+                    className="tickets__form-select"
+                    value={assigneeId}
+                    onChange={(e) => setAssigneeId(e.target.value)}
+                    style={{ width: '100%', padding: '10px 12px', background: 'rgba(15,23,42,0.5)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff', outline: 'none' }}
+                  >
+                    <option value="unassigned">Unassigned (Leave Open)</option>
+                    {agents.map(a => (
+                      <option key={a._id} value={a._id} style={{ background: '#1e293b', color: '#fff' }}>
+                        {a.firstName} {a.lastName} ({a.role === 'company_admin' ? 'Admin' : 'Agent'})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <>
+                  <p className="tickets__modal-text">
+                    You are about to be assigned to ticket <strong>#{selectedTicket.ticketNumber}</strong> for customer <strong>{selectedTicket.customerName || selectedTicket.customer?.name || selectedTicket.customer}</strong>.
+                  </p>
+                  <p className="tickets__modal-subtext">
+                    Once assigned, you'll be responsible for resolving this ticket and communicating with the customer.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className="tickets__modal-actions">
@@ -334,7 +373,7 @@ const Tickets = ({ onNavigateToInbox }) => {
                 className="db-btn db-btn--primary"
                 onClick={handleAssignTicket}
               >
-                Assign to Me
+                {user?.role === 'company_admin' ? 'Confirm Assignment' : 'Assign to Me'}
               </button>
             </div>
           </div>

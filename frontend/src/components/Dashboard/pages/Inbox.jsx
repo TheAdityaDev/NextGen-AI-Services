@@ -694,7 +694,7 @@ const Inbox = ({ initialCustomerId }) => {
                     : 'Unassigned'}
                 </strong>
               </div>
-              {!currentChat?.assignedTo && (
+              {(!currentChat?.assignedTo || (currentChat.assignedTo._id !== user?.id && currentChat.assignedTo._id !== user?._id)) && (
                 <button
                   className="db-btn db-btn--ghost inbox__assign-btn"
                   onClick={handleAssignToMe}

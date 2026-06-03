@@ -292,6 +292,35 @@ class ApiService {
     return this.patch('/widget-config', data);
   }
 
+  // Public Ticket View endpoints (unauthenticated)
+  async getPublicTicket(ticketId) {
+    if (!this.isValidObjectId(ticketId)) {
+      throw new ApiError('Invalid ticket ID format', 400);
+    }
+    return this.get(`/widget/tickets/${ticketId}`);
+  }
+
+  async getPublicTicketMessages(ticketId) {
+    if (!this.isValidObjectId(ticketId)) {
+      throw new ApiError('Invalid ticket ID format', 400);
+    }
+    return this.get(`/widget/messages/${ticketId}`);
+  }
+
+  async sendPublicTicketMessage(ticketId, message) {
+    if (!this.isValidObjectId(ticketId)) {
+      throw new ApiError('Invalid ticket ID format', 400);
+    }
+    return this.post(`/widget/tickets/${ticketId}/message`, { message });
+  }
+
+  async submitPublicCSAT(ticketId, rating, feedback) {
+    if (!this.isValidObjectId(ticketId)) {
+      throw new ApiError('Invalid ticket ID format', 400);
+    }
+    return this.post('/widget/csat', { ticketId, rating, feedback });
+  }
+
   // Team endpoints
   async getTeam() {
     return this.get('/team');

@@ -98,15 +98,18 @@ const updateTicket = async (tenantId, ticketId, updates, actor) => {
   const actorRole = actor?.role;
   const prevStatus = ticket.status;
 
-  // RBAC checks: agents can only update status
+  // RBAC checks: agents can only update status or assign the ticket to themselves
   if (actorRole === "support_agent") {
-    const allowedFields = ["status"];
+    const allowedFields = ["status", "assignedTo"];
     const attemptedFields = Object.keys(updates);
     const invalidFields = attemptedFields.filter(
       (f) => !allowedFields.includes(f) && updates[f] !== undefined && String(updates[f]) !== String(ticket[f])
     );
     if (invalidFields.length > 0) {
-      throw new AppError("Support agents are only authorized to update ticket status.", 403);
+      throw new AppError("Support agents are only authorized to update ticket status or assign tickets to themselves.", 403);
+    }
+    if (updates.assignedTo && String(updates.assignedTo) !== String(actorId)) {
+      throw new AppError("Support agents can only assign tickets to themselves.", 403);
     }
   }
 

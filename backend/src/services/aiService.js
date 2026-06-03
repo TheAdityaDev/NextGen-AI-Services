@@ -69,10 +69,20 @@ class AIService {
 
         const confidence = this._calculateConfidence(customerMessage, aiReply);
 
+        // Check if the AI itself decided to escalate
+        const escalationPhrases = [
+          'escalate to a human', 'transfer you to a human', 'transfer to an agent',
+          'connect you with an agent', 'connect you with a human', 'route you to an agent',
+          'pass this to a human', 'speak with a representative', 'human agent',
+          'escalate to an agent', 'connect with an agent'
+        ];
+        const lowerReply = aiReply.toLowerCase();
+        const aiDecidedToEscalate = escalationPhrases.some(phrase => lowerReply.includes(phrase));
+
         return {
           response: aiReply,
           confidence,
-          shouldAutoReply: confidence >= this.confidenceThreshold,
+          shouldAutoReply: confidence >= this.confidenceThreshold && !aiDecidedToEscalate,
         };
       } catch (error) {
         lastError = error;

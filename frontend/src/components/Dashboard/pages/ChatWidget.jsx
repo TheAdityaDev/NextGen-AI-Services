@@ -10,6 +10,7 @@ const ChatWidget = () => {
     isOnline: true,
     offlineMessage: 'We are currently offline. Leave us a message and we will get back to you.',
     companyName: '',
+    companyLogo: '',
     showBranding: true
   });
   const [loading, setLoading] = useState(true);
@@ -114,6 +115,17 @@ const ChatWidget = () => {
                 placeholder="Your Company Name"
               />
             </div>
+
+            <div className="chatwidget__field">
+              <label>Company Logo URL</label>
+              <input 
+                type="text"
+                value={config.companyLogo || ''}
+                onChange={e => handleConfigChange('companyLogo', e.target.value)}
+                className="db-input"
+                placeholder="https://example.com/logo.png"
+              />
+            </div>
           </div>
 
           {/* Messages Settings */}
@@ -173,15 +185,24 @@ const ChatWidget = () => {
         <div className="chatwidget__preview">
           <div className="chatwidget__preview-label">Live Preview</div>
           <div className="chatwidget__window" style={{ '--primary-color': config.primaryColor }}>
-            <div className="chatwidget__win-header">
-              <div className="chatwidget__win-title">
-                {config.companyName || 'NextGen AI Services'} Support
-              </div>
-              <div className="chatwidget__win-status">
-                <span className={`chatwidget__status-dot ${config.isOnline ? 'online' : 'offline'}`}></span>
-                <span className="chatwidget__status-text">
-                  {config.isOnline ? 'Online' : 'Offline'}
-                </span>
+            <div className="chatwidget__win-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {config.companyLogo ? (
+                  <img src={config.companyLogo} alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} />
+                ) : (
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>CF</div>
+                )}
+                <div>
+                  <div className="chatwidget__win-title" style={{ margin: 0, fontSize: '13px', fontWeight: 600 }}>
+                    {config.companyName || 'Support Chat'}
+                  </div>
+                  <div className="chatwidget__win-status" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', opacity: 0.8 }}>
+                    <span className={`chatwidget__status-dot ${config.isOnline ? 'online' : 'offline'}`} style={{ width: '6px', height: '6px' }}></span>
+                    <span className="chatwidget__status-text">
+                      {config.isOnline ? 'Online' : 'Offline'}
+                    </span>
+                  </div>
+                </div>
               </div>
               <button className="chatwidget__win-close">×</button>
             </div>

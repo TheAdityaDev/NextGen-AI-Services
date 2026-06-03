@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import Onboarding from './components/Onboarding/Onboarding';
 import Dashboard from './components/Dashboard/Dashboard';
 import Workspace from './components/Workspace/Workspace';
+import PublicTicketView from './pages/PublicTicketView';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -18,6 +19,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
+          
+          {/* Public Ticket View */}
+          <Route path="/public/tickets/:ticketId" element={<PublicTicketView />} />
           
           {/* Public routes - redirect to role-based route if already authenticated */}
           <Route 
